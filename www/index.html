@@ -1,0 +1,49 @@
+<html>
+<head>
+
+  <title>Open Data Ottawa Points of Interest</title>
+
+  <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+  <script src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
+
+  <script type="text/javascript">
+    // Coordinates for Ottawa, ON
+    var lat=45.420833
+    var lon=-75.69
+
+    var zoom=13
+        
+    var map;
+
+    function init() {
+
+      map = new OpenLayers.Map ("map", {
+        controls: [new OpenLayers.Control.Navigation(), new OpenLayers.Control.PanZoomBar()],
+        maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),
+        maxResolution: 156543.0399,
+        numZoomLevels: 19,
+        units: 'm',
+        projection: new OpenLayers.Projection("EPSG:900913"),
+        displayProjection: new OpenLayers.Projection("EPSG:4326")
+      } );
+
+
+      layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
+      map.addLayer(layerMapnik);
+
+      var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+      map.setCenter(lonLat, zoom);
+    }
+
+  </script>
+</head>
+<body onload="init();">
+
+  <div style="width:85%; height:85%" id="map"></div>
+  <div><p><small>The snazzy map you see above is courtesy of <a href="http://openstreetmap.org">OpenStreetMap</a>. OpenStreeMap data is licensed under 
+the <a href="http://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-Share Alike 2.0 Generic License</a>. The code used to 
+generate this page is based on examples available at <a href="http://wiki.openstreetmap.org">wiki.OpenStreetMap.org</a> which are licensed under the 
+<a href="http://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-Share Alike 2.0 Generic License</a>.</small></p></div>
+
+</body>
+</html>
