@@ -27,9 +27,16 @@
         displayProjection: new OpenLayers.Projection("EPSG:4326")
       } );
 
-
       layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
       map.addLayer(layerMapnik);
+
+      var pois_octranspo = new OpenLayers.Layer.Text("OC Transpo Bus Stops", {location:"./poi/busstops-octranspo.txt", projection: map.displayProjection});
+      map.addLayer(pois_octranspo);
+
+      var pois_sto = new OpenLayers.Layer.Text("STO Bus Stops", {location:"./poi/busstops-sto.txt", projection: map.displayProjection});
+      map.addLayer(pois_sto);
+
+      map.addControl(new OpenLayers.Control.LayerSwitcher());
 
       var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
       map.setCenter(lonLat, zoom);
@@ -38,11 +45,11 @@
   </script>
 </head>
 <body onload="init();">
-
-  <div style="width:85%; height:85%" id="map"></div>
+  <div><p>This application is under construction. The points of interest you see on this page are for testing purposes only and may be totally inaccurate.</p></div>
+  <div style="width:100%; height:85%" id="map"></div>
   <div><p><small>The snazzy map you see above is courtesy of <a href="http://openstreetmap.org">OpenStreetMap</a>. OpenStreeMap data is licensed under 
 the <a href="http://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-Share Alike 2.0 Generic License</a>. The code used to 
-generate this page is based on examples available at <a href="http://wiki.openstreetmap.org">wiki.OpenStreetMap.org</a> which are licensed under the 
+generate this page is based on examples available at <a href="http://wiki.openstreetmap.org">wiki.OpenStreetMap.org</a> which is licensed under the 
 <a href="http://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-Share Alike 2.0 Generic License</a>.</small></p></div>
 
 </body>
