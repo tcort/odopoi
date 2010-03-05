@@ -3,7 +3,10 @@
 
   <title>Open Data Ottawa Points of Interest</title>
 
-  <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+  <script src="lib/OpenLayers.js"></script>
+  <script src="lib/MarkerGrid.js"></script>
+  <script src="lib/MarkerTile.js"></script>
+
   <script src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
 
   <script type="text/javascript">
@@ -14,6 +17,29 @@
     var zoom=13
         
     var map;
+    var POI;
+
+    function get_poi_url_sto() {
+      return get_poi_url('sto');
+    }
+
+    function get_poi_url(poi_type) {
+      var zoom = this.map.getZoom();
+      var tlLonLat = this.map.getLonLatFromPixel(new OpenLayers.Pixel(1,1)).
+            transform(this.map.getProjectionObject(),this.map.displayProjection);
+ 
+      var mapsize = this.map.getSize();
+      var brLonLat = this.map.getLonLatFromPixel(new OpenLayers.Pixel(mapsize.w - 1, mapsize.h - 1)).
+            transform(this.map.getProjectionObject(),this.map.displayProjection);
+
+      return "./api.php?action=getPOI"
+            + "&tllon=" + tlLonLat.lon;
+            + "&tllat=" + tlLonLat.lat;
+            + "&brlon=" + brLonLat.lon;
+            + "&brlat=" + brLonLat.lat;
+            + "&zoom=" + zoom;
+            + "&type=" + poi_type;
+    }
 
     function init() {
 
@@ -28,14 +54,12 @@
       } );
 
       layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
-      map.addLayer(layerMapnik);
 
-      var pois_octranspo = new OpenLayers.Layer.Text("OC Transpo Bus Stops", {location:"./poi/busstops-octranspo.txt", projection: map.displayProjection});
-      map.addLayer(pois_octranspo);
+      POI = new OpenLayers.Layer.MarkerGrid( "STO Bus Stops", {type:'txt', getURL: get_poi_url_sto, attribution: "Open Data Ottawa", buffer: 0});
+      POI.setIsBaseLayer(false);
+      POI.setVisibility(true);
 
-      var pois_sto = new OpenLayers.Layer.Text("STO Bus Stops", {location:"./poi/busstops-sto.txt", projection: map.displayProjection});
-      map.addLayer(pois_sto);
-
+      map.addLayers([layerMapnik, POI]);
       map.addControl(new OpenLayers.Control.LayerSwitcher());
 
       var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
@@ -45,8 +69,11 @@
   </script>
 </head>
 <body onload="init();">
+
   <div><p>This application is under construction. The points of interest you see on this page are for testing purposes only and may be totally inaccurate.</p></div>
+
   <div style="width:100%; height:85%" id="map"></div>
+
   <div><p><small>The snazzy map you see above is courtesy of <a href="http://openstreetmap.org">OpenStreetMap</a>. OpenStreeMap data is licensed under 
 the <a href="http://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-Share Alike 2.0 Generic License</a>. The code used to 
 generate this page is based on examples available at <a href="http://wiki.openstreetmap.org">wiki.OpenStreetMap.org</a> which is licensed under the 

@@ -1,3 +1,0 @@
-lat	lon	title	description	icon	iconSize	iconOffset
-45.437153	-75.709007	SACRE COEUR / LAURIER	OC Transpo Stop<br><br>(click again to close)	img/bus-octranspo.png	24,24	0,-24
-45.427364	-75.689774	DALHOUSIE / RIDEAU	OC Transpo Stop<br><br>(click again to close)	img/bus-octranspo.png	24,24	0,-24

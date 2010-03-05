@@ -1,2 +1,0 @@
-lat	lon	title	description	icon	iconSize	iconOffset
-45.437153	-75.709007	SACRE COEUR / LAURIER	STO Bus Stop<br><br>(click again to close)	img/bus-sto.png	24,24	0,0
