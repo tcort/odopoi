@@ -31,6 +31,7 @@ function getPOI_body() {
 	$brlon = $_REQUEST["brlon"];
 	$brlat = $_REQUEST["brlat"];
 
+	/* TODO: adjust number of results and icons based on zoom factor */
 	if (is_numeric($tllon) && is_numeric($tllat) && is_numeric($brlon) && is_numeric($brlat)) {
 		$lon_min = ($tllon < $brlon) ? $tllon : $brlon;
 		$lon_max = ($tllon > $brlon) ? $tllon : $brlon;
