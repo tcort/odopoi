@@ -26,8 +26,22 @@ function getPOI_header() {
 }
 
 function getPOI_body() {
-	/* TODO: add WHERE lat/lon between the parameters passed to the script. validate params */
-	$sql = "SELECT * FROM poi;";
+	$tllon = $_REQUEST["tllon"];
+	$tllat = $_REQUEST["tllat"];
+	$brlon = $_REQUEST["brlon"];
+	$brlat = $_REQUEST["brlat"];
+
+	if (is_numeric($tllon) && is_numeric($tllat) && is_numeric($brlon) && is_numeric($brlat)) {
+		$lon_min = ($tllon < $brlon) ? $tllon : $brlon;
+		$lon_max = ($tllon > $brlon) ? $tllon : $brlon;
+		$lat_min = ($tllat < $brlat) ? $tllat : $brlat;
+		$lat_max = ($tllat > $brlat) ? $tllat : $brlat;
+
+		$sql = "SELECT * FROM poi WHERE lat BETWEEN ('" . $lat_min . "','" . $lat_max . "') AND lon BETWEEN ('" . $lon_min . "','" . $lon_max . "') RAND() LIMIT 100;";
+	} else {
+		$sql = "SELECT * FROM poi ORDER BY RAND() LIMIT 100;";
+	}
+
 	$result = mysql_query($sql);
 	$num = mysql_numrows($result);
 
