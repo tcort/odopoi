@@ -1,0 +1,5 @@
+- Database Design Improvements
+ * Normalize DB
+ * Add Indexes
+
+- GPS Export
