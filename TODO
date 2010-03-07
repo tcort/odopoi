@@ -1,5 +1,15 @@
 - Database Design Improvements
  * Normalize DB
- * Add Indexes
+
+- Page Improvements
+ * Make markers clickable. On click, display a bubble of info.
+
+- AJAX Improvements
+ * If a marker is in view and stays in view after a move, don't remove 
+   and re-add it. Just leave it where it was.
+
+- Graphics Improvements
+ * Get someone with mad skillz to design the icons.
+ * Scale icons depending on zoom level.
 
 - GPS Export
