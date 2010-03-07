@@ -20,12 +20,10 @@ function db_disconnect() {
 	@mysql_close();
 }
 
-function getPOI_header() {
-	header("Content-type: text/plain; charset=UTF-8");
-	print "lat\tlon\ttitle\tdescription\ticon\ticonSize\ticonOffset\n";
-}
+function getPOI() {
+	header("Content-type: text/xml; charset=UTF-8");
+	echo '<?xml version="1.0" ?>';
 
-function getPOI_body() {
 	$tllon = $_REQUEST["tllon"];
 	$tllat = $_REQUEST["tllat"];
 	$brlon = $_REQUEST["brlon"];
@@ -38,42 +36,47 @@ function getPOI_body() {
 		$lat_min = ($tllat < $brlat) ? $tllat : $brlat;
 		$lat_max = ($tllat > $brlat) ? $tllat : $brlat;
 
-		$sql = "SELECT * FROM poi WHERE lat BETWEEN ('" . $lat_min . "','" . $lat_max . "') AND lon BETWEEN ('" . $lon_min . "','" . $lon_max . "') RAND() LIMIT 100;";
+		$sql = "SELECT * FROM poi WHERE lat BETWEEN '" . $lat_min . "' AND '" . $lat_max . "' AND lon BETWEEN '" . $lon_min . "' AND '" . $lon_max . "' ORDER BY RAND() LIMIT 100;";
 	} else {
 		$sql = "SELECT * FROM poi ORDER BY RAND() LIMIT 100;";
 	}
 
 	$result = mysql_query($sql);
-	$num = mysql_numrows($result);
 
-	for ($i = 0; $i < $num; $i++) {
-		print mysql_result($result,$i,"lat");
-		print "\t";
-		print mysql_result($result,$i,"lon");
-		print "\t";
-		print mysql_result($result,$i,"title");
-		print "\t";
-		print mysql_result($result,$i,"description");
-		print "\t";
-		print mysql_result($result,$i,"icon");
-		print "\t";
-		print mysql_result($result,$i,"iconSize");
-		print "\t";
-		print mysql_result($result,$i,"iconOffset");
-		print "\n";
+?>
+<!DOCTYPE root [
+<!ELEMENT cell ( #PCDATA ) >
+<!ELEMENT data ( row+ ) >
+<!ELEMENT root ( data ) >
+<!ELEMENT row ( cell+ ) >
+]>
+<root>
+	<data>
+<?php
+	while ($row = mysql_fetch_row($result)) {
+?>
+		<row>
+			<cell><?php echo htmlspecialchars(htmlspecialchars($row[0])); ?></cell>
+			<cell><?php echo htmlspecialchars(htmlspecialchars($row[1])); ?></cell>
+			<cell><?php echo htmlspecialchars(htmlspecialchars($row[2])); ?></cell>
+			<cell><?php echo htmlspecialchars(htmlspecialchars($row[3])); ?></cell>
+			<cell><?php echo htmlspecialchars(htmlspecialchars($row[4])); ?></cell>
+			<cell><?php echo htmlspecialchars(htmlspecialchars($row[5])); ?></cell>
+			<cell><?php echo htmlspecialchars(htmlspecialchars($row[6])); ?></cell>
+		</row>
+<?php
 	}
 
+?>
+	</data>
+</root>
+<?php
 }
 
-function getPOI_footer() {
-	/* nothing */
-}
 
 if (strcmp($_REQUEST["action"], "getPOI") == 0) {
 	db_connect();
-	getPOI_header();
-	getPOI_body();
-	getPOI_footer();
+	getPOI();
 	db_disconnect();
 } else {
 	header("Content-type: text/plain; charset=UTF-8");

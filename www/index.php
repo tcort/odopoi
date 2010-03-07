@@ -14,30 +14,106 @@
     var lat=45.420833
     var lon=-75.69
 
-    var zoom=13
+    var zoom=12
         
     var map;
     var markers;
     var my_markers = new Array();
 
+    function makeRequest(url) {
+      var http_request = false;
+
+      if (window.XMLHttpRequest) { // Mozilla, Safari, ...
+        http_request = new XMLHttpRequest();
+        if (http_request.overrideMimeType) {
+          http_request.overrideMimeType('text/xml');
+        }
+      } else if (window.ActiveXObject) { // IE
+        try {
+          http_request = new ActiveXObject("Msxml2.XMLHTTP");
+        } catch (e) {
+          try {
+            http_request = new ActiveXObject("Microsoft.XMLHTTP");
+          } catch (e) {
+          }
+        }
+      }
+
+      if (!http_request) {
+        alert('Giving up :( Cannot create an XMLHTTP instance');
+        return false;
+      }
+
+      http_request.onreadystatechange = function() { alertContents(http_request); };
+      http_request.open('GET', url, true);
+      http_request.send(null);
+    }
+
+    function alertContents(http_request) {
+      if (http_request.readyState == 4) {
+        if (http_request.status == 200) {
+          var xmldoc = http_request.responseXML;
+          var root = xmldoc.getElementsByTagName('root').item(0);
+
+          if (root != null) {
+
+            var iNode = 0;
+            for (iNode = 0; iNode < root.childNodes.length; iNode++) {
+
+              var node = root.childNodes.item(iNode);
+              for (i = node.childNodes.length-1; i >= 0; i--) {
+                var sibl = node.childNodes.item(i);
+                var len = parseInt(sibl.childNodes.length / 2);
+                var arr = new Array(len);
+                var cnt = 0;
+                for (x = 0; x < sibl.childNodes.length; x++) {
+                  var sibl2 = sibl.childNodes.item(x);
+                  var sibl3;
+                  if (sibl2.childNodes.length > 0) {
+                    sibl3 = sibl2.childNodes.item(0);
+                    arr[cnt] = sibl3.data;
+                    cnt++;
+                  }
+                }
+                if (arr.length > 0) {
+                  var size = new OpenLayers.Size(21,20);
+                  var offset = new OpenLayers.Pixel(0,0);
+                  var icon = new OpenLayers.Icon(arr[4],size,offset);
+                  var marker = new OpenLayers.Marker(new OpenLayers.LonLat(arr[1], arr[0]).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon);
+                  markers.addMarker(marker);
+                  my_markers.push(marker);
+                }
+              }
+            }
+          }
+        } else {
+          alert('There was a problem with the request.');
+        }
+      }
+    }
+
     function moveend_listener(event) {
-      // remove all markers
       while (my_markers.length > 0) {
         var current_marker = my_markers.pop();
         markers.removeMarker(current_marker);
         current_marker.destroy();
       }
 
-      // compute visible area
-      // fetch new markers
-      // add new markers
+      var zoom = map.getZoom();
+      var tlLonLat = map.getLonLatFromPixel(new OpenLayers.Pixel(1,1)).
+            transform(map.getProjectionObject(),map.displayProjection);
+      var mapsize = map.getSize();
+      var brLonLat = map.getLonLatFromPixel(new OpenLayers.Pixel(mapsize.w - 1, mapsize.h - 1)).
+            transform(map.getProjectionObject(),map.displayProjection);
 
-      var size = new OpenLayers.Size(21,20);
-      var offset = new OpenLayers.Pixel(0,0);
-      var icon = new OpenLayers.Icon('./img/library.png',size,offset);
-      var marker = new OpenLayers.Marker(new OpenLayers.LonLat('-75.684036612511', '45.395477935688').transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon);
-      markers.addMarker(marker);
-      my_markers.push(marker);
+      var url = "./api.php?action=getPOI"
+           + "&zoom=" + zoom
+           + "&tllon=" + tlLonLat.lon
+           + "&tllat=" + tlLonLat.lat
+           + "&brlon=" + brLonLat.lon
+           + "&brlat=" + brLonLat.lat;
+
+      makeRequest(url);
     }
 
     function init() {
