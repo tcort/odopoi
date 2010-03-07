@@ -6,11 +6,7 @@
 
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-  <script type="text/javascript" src="lib/OpenLayers.js"></script>
-  <script type="text/javascript" src="lib/MarkerGrid.js"></script>
-  <script type="text/javascript" src="lib/MarkerTile.js"></script>
-  <script type="text/javascript" src="lib/bounds.js"></script>
-
+  <script type="text/javascript" src="http://www.openlayers.org/api/OpenLayers.js"></script>
   <script type="text/javascript" src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
 
   <script type="text/javascript">
@@ -21,17 +17,6 @@
     var zoom=13
         
     var map;
-    var POI;
-
-    function get_poi_url(bounds) {
-      var zoom = this.map.getZoom();
-      return "./api.php?action=getPOI"
-            + "&tllon=" + getLeft(bounds);
-            + "&tllat=" + getTop(bounds);
-            + "&brlon=" + getRight(bounds);
-            + "&brlat=" + getBottom(bounds);
-            + "&zoom=" + zoom;
-    }
 
     function init() {
 
@@ -44,16 +29,12 @@
         projection: new OpenLayers.Projection("EPSG:900913"),
         displayProjection: new OpenLayers.Projection("EPSG:4326")
       } );
-
+ 
       layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
-
-      POI = new OpenLayers.Layer.MarkerGrid("Points of Interest", {type:'txt', getURL: get_poi_url, attribution: "Open Data Ottawa", buffer: 0});
-      POI.setIsBaseLayer(false);
-      POI.setVisibility(true);
-
-      map.addLayers([layerMapnik, POI]);
+      map.addLayer(layerMapnik);
+ 
       map.addControl(new OpenLayers.Control.LayerSwitcher());
-
+ 
       var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
       map.setCenter(lonLat, zoom);
     }
