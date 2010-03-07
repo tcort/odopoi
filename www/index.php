@@ -17,6 +17,28 @@
     var zoom=13
         
     var map;
+    var markers;
+    var my_markers = new Array();
+
+    function moveend_listener(event) {
+      // remove all markers
+      while (my_markers.length > 0) {
+        var current_marker = my_markers.pop();
+        markers.removeMarker(current_marker);
+        current_marker.destroy();
+      }
+
+      // compute visible area
+      // fetch new markers
+      // add new markers
+
+      var size = new OpenLayers.Size(21,20);
+      var offset = new OpenLayers.Pixel(0,0);
+      var icon = new OpenLayers.Icon('./img/library.png',size,offset);
+      var marker = new OpenLayers.Marker(new OpenLayers.LonLat('-75.684036612511', '45.395477935688').transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon);
+      markers.addMarker(marker);
+      my_markers.push(marker);
+    }
 
     function init() {
 
@@ -27,12 +49,16 @@
         numZoomLevels: 19,
         units: 'm',
         projection: new OpenLayers.Projection("EPSG:900913"),
-        displayProjection: new OpenLayers.Projection("EPSG:4326")
+        displayProjection: new OpenLayers.Projection("EPSG:4326"),
+        eventListeners: { "moveend": moveend_listener }
       } );
  
       layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
       map.addLayer(layerMapnik);
- 
+
+      markers = new OpenLayers.Layer.Markers("Open Data Ottawa Points of Interest");
+      map.addLayer(markers);
+
       map.addControl(new OpenLayers.Control.LayerSwitcher());
  
       var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
