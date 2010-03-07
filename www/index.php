@@ -9,6 +9,7 @@
   <script type="text/javascript" src="lib/OpenLayers.js"></script>
   <script type="text/javascript" src="lib/MarkerGrid.js"></script>
   <script type="text/javascript" src="lib/MarkerTile.js"></script>
+  <script type="text/javascript" src="lib/bounds.js"></script>
 
   <script type="text/javascript" src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
 
@@ -22,26 +23,14 @@
     var map;
     var POI;
 
-    function get_poi_url_sto() {
-      return get_poi_url('sto');
-    }
-
-    function get_poi_url(poi_type) {
+    function get_poi_url(bounds) {
       var zoom = this.map.getZoom();
-      var tlLonLat = this.map.getLonLatFromPixel(new OpenLayers.Pixel(1,1)).
-            transform(this.map.getProjectionObject(),this.map.displayProjection);
- 
-      var mapsize = this.map.getSize();
-      var brLonLat = this.map.getLonLatFromPixel(new OpenLayers.Pixel(mapsize.w - 1, mapsize.h - 1)).
-            transform(this.map.getProjectionObject(),this.map.displayProjection);
-
       return "./api.php?action=getPOI"
-            + "&tllon=" + tlLonLat.lon;
-            + "&tllat=" + tlLonLat.lat;
-            + "&brlon=" + brLonLat.lon;
-            + "&brlat=" + brLonLat.lat;
+            + "&tllon=" + getLeft(bounds);
+            + "&tllat=" + getTop(bounds);
+            + "&brlon=" + getRight(bounds);
+            + "&brlat=" + getBottom(bounds);
             + "&zoom=" + zoom;
-            + "&type=" + poi_type;
     }
 
     function init() {
@@ -58,7 +47,7 @@
 
       layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
 
-      POI = new OpenLayers.Layer.MarkerGrid( "STO Bus Stops", {type:'txt', getURL: get_poi_url_sto, attribution: "Open Data Ottawa", buffer: 0});
+      POI = new OpenLayers.Layer.MarkerGrid("Points of Interest", {type:'txt', getURL: get_poi_url, attribution: "Open Data Ottawa", buffer: 0});
       POI.setIsBaseLayer(false);
       POI.setVisibility(true);
 
