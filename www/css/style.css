@@ -1,3 +1,21 @@
+/*
+# Open Data Ottawa Points of Interest 
+# Copyright (C) 2010 Thomas Cort <linuxgeek@gmail.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 * {
 	padding: 0;
 	margin: 0;
@@ -17,13 +35,32 @@ body {
 	border-bottom: dotted 1px #cccccc;
 	padding: 10px 0 10px 0;
 	color: #f7f7f7;
-	background: #cc0033;
+	background: #c70033;
 }
 
 #footer {
+	clear:both;
 	text-align: center;
 	border-top: dotted 1px #cccccc;
 	padding: 10px 0 10px 0;
 	color: #666666;
 	background: #c7c7c7;
+}
+
+#map {
+	width: 80%;
+	height: 80%;
+	float: left;
+	color: #666666;
+	background: #c7c7c7;
+}
+
+#sidebar {
+	float: right;
+	width: 16%;
+	height: 80%;
+	color: #666666;
+	background: #eeeec7;
+	padding-left: 2%;
+	padding-right: 2%;
 }

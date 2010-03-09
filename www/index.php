@@ -1,12 +1,27 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<?php
+# Open Data Ottawa Points of Interest
+# Copyright (C) 2010 Thomas Cort <linuxgeek@gmail.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-
-  <title>Open Data Ottawa Points of Interest</title>
+  <title>OpenDataMap.ca - Open Data Ottawa Points of Interest</title>
 
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-  <link rel="stylesheet" type="text/css" href="css/style.css" media="screen" />
+  <link rel="stylesheet" type="text/css" href="css/style.css" media="screen">
 
   <script type="text/javascript" src="http://www.openlayers.org/api/OpenLayers.js"></script>
   <script type="text/javascript" src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
@@ -121,7 +136,7 @@
     function init() {
 
       map = new OpenLayers.Map ("map", {
-        controls: [new OpenLayers.Control.Navigation(), new OpenLayers.Control.PanZoomBar()],
+        controls: [new OpenLayers.Control.Navigation(), new OpenLayers.Control.PanZoomBar(), new OpenLayers.Control.Attribution()],
         maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),
         maxResolution: 156543.0399,
         numZoomLevels: 19,
@@ -148,9 +163,20 @@
 <body onload="init();">
 
   <div id="header"><h1>Welcome to OpenDataMap.ca<sup>Alpha</sup>!</h1></div>
-  <div><p><em>Warning</em>: The points of interest you see on this page are for testing purposes only and may be totally inaccurate. <a href="http://opendataottawa.ca">Help this app get to Beta</a>.</p></div>
-  <div style="width:100%;height:76%;" id="map"></div>
-  <div id="footer"><p><small>The snazzy map you see above is courtesy of <a href="http://openstreetmap.org">OpenStreetMap</a>. OpenStreeMap data is licensed under the <a href="http://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-Share Alike 2.0 Generic License</a>. The <a href="http://github.com/tcort/odopoi">code</a> used to generate this page is based on examples available at <a href="http://wiki.openstreetmap.org">wiki.OpenStreetMap.org</a> and is licensed under the <a href="http://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-Share Alike 2.0 Generic License</a>.</small></p></div>
+  <div id="map"></div>
+  <div id="sidebar">
+    <p>&nbsp;</p>
+    <p><em>Warning</em>: The points of interest you see on this page are for testing purposes only and may be totally inaccurate. <a href="http://opendataottawa.ca">Help this app get to Beta</a>.</p>
+  </div>
+  <div id="footer">
+    <p>
+      <a href="http://www.fsf.org/register_form?referrer=71"><img src="./img/fsf-member.png" border="0" alt="[FSF Associate Member]" width="88" height="31" /></a>
+      <a href="http://endsoftpatents.org/innovating-without-patents"><img border="0" src="./img/esp-button.png" alt="Innovating without Patents"/></a>
+      <a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html"><img src="./img/agplv3-88x31.png" alt="[AGPLv3+ Licensed]" border="0" width="88" height="31" /></a>
+    </p>
+    <p>Copyright &copy; 2010 <a href="http://www.tomcort.com/">Thomas Cort</a> &lt;<a href="mailto:linuxgeek@gmail.com">linuxgeek@gmail.com</a>&gt;</p>
+    <p><small>This application is <a href="http://www.gnu.org/philosophy/free-sw.html">Free Software</a>. Get the source code <a href="http://github.com/tcort/odopoi">here</a>.</small></p>
+  </div>
 
 </body>
 </html>
