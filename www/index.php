@@ -6,6 +6,8 @@
 
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
+  <link rel="stylesheet" type="text/css" href="css/style.css" media="screen" />
+
   <script type="text/javascript" src="http://www.openlayers.org/api/OpenLayers.js"></script>
   <script type="text/javascript" src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
 
@@ -145,32 +147,10 @@
 </head>
 <body onload="init();">
 
-  <table style="width: 100%; height: 100%" border="0px" cellspacing="0px" cellpadding="0px">
-    <tr>
-      <th style="width: 100%;">
-        Welcome to OpenDataMap.ca<sup>Alpha</sup>!
-      </th>
-    </tr>
-    <tr>
-      <td style="width: 100%;">
-        <div><p><em>Warning</em>: The points of interest you see on this page are for testing purposes only and may be totally inaccurate. <a href="http://opendataottawa.ca">Help this app get to Beta</a>.</p></div>
-      </td>
-    </tr>
-    <tr>
-      <td style="width: 100%; height: 100%">
-        <div style="width:100%; height:100%" id="map"></div>
-      </td>
-    </tr>
-    <tr>
-      <td style="width: 100%;">
-  <div><p><small>The snazzy map you see above is courtesy of <a href="http://openstreetmap.org">OpenStreetMap</a>. OpenStreeMap data is licensed under 
-the <a href="http://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-Share Alike 2.0 Generic License</a>. The 
-<a href="http://github.com/tcort/odopoi">code</a> used to generate this page is based on examples available at <a 
-href="http://wiki.openstreetmap.org">wiki.OpenStreetMap.org</a> and is licensed under the 
-<a href="http://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-Share Alike 2.0 Generic License</a>.</small></p></div>
-      </td>
-    </tr>
-  </table>
+  <div id="header"><h1>Welcome to OpenDataMap.ca<sup>Alpha</sup>!</h1></div>
+  <div><p><em>Warning</em>: The points of interest you see on this page are for testing purposes only and may be totally inaccurate. <a href="http://opendataottawa.ca">Help this app get to Beta</a>.</p></div>
+  <div style="width:100%;height:76%;" id="map"></div>
+  <div id="footer"><p><small>The snazzy map you see above is courtesy of <a href="http://openstreetmap.org">OpenStreetMap</a>. OpenStreeMap data is licensed under the <a href="http://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-Share Alike 2.0 Generic License</a>. The <a href="http://github.com/tcort/odopoi">code</a> used to generate this page is based on examples available at <a href="http://wiki.openstreetmap.org">wiki.OpenStreetMap.org</a> and is licensed under the <a href="http://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-Share Alike 2.0 Generic License</a>.</small></p></div>
 
 </body>
 </html>

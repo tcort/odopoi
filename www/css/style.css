@@ -1,0 +1,29 @@
+* {
+	padding: 0;
+	margin: 0;
+}
+
+body {
+	font-family: "Trebuchet MS" Verdana, Arial, sans-serif;
+	font-size: .9em;
+	color: #000000;
+	background: #eeeeee;
+}
+
+#header {
+	margin: 0px auto 0 auto;
+	text-align: center;
+	font-size: 16pt;
+	border-bottom: dotted 1px #cccccc;
+	padding: 10px 0 10px 0;
+	color: #f7f7f7;
+	background: #cc0033;
+}
+
+#footer {
+	text-align: center;
+	border-top: dotted 1px #cccccc;
+	padding: 10px 0 10px 0;
+	color: #666666;
+	background: #c7c7c7;
+}
