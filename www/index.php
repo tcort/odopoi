@@ -188,7 +188,8 @@
   <div id="map"></div>
   <div id="sidebar">
     <div id="sidetxt">
-      <p><em>Warning</em>: The points of interest you see on this page are for testing purposes only and may be totally inaccurate. <a href="http://opendataottawa.ca">Help this app get to Beta</a>.</p>
+      <p><em>Warning</em>: The points of interest you see on this page are for testing purposes only and may be totally inaccurate.</p>
+      <p>Help this app get from Alpha to Beta by contributing to <a href="http://opendataottawa.ca">Open Data Ottawa</a>.</p>
     </div>
   </div>
   <div id="footer">
