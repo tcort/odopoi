@@ -63,15 +63,7 @@ function getPOI() {
 <?php
 	while ($row = mysql_fetch_row($result)) {
 ?>
-		<row>
-			<cell><?php echo htmlspecialchars(htmlspecialchars($row[0])); ?></cell>
-			<cell><?php echo htmlspecialchars(htmlspecialchars($row[1])); ?></cell>
-			<cell><?php echo htmlspecialchars(htmlspecialchars($row[2])); ?></cell>
-			<cell><?php echo htmlspecialchars(htmlspecialchars($row[3])); ?></cell>
-			<cell><?php echo htmlspecialchars(htmlspecialchars($row[4])); ?></cell>
-			<cell><?php echo htmlspecialchars(htmlspecialchars($row[5])); ?></cell>
-			<cell><?php echo htmlspecialchars(htmlspecialchars($row[6])); ?></cell>
-		</row>
+<row><cell><?php echo htmlspecialchars(htmlspecialchars($row[0])); ?></cell><cell><?php echo htmlspecialchars(htmlspecialchars($row[1])); ?></cell><cell><?php echo htmlspecialchars(htmlspecialchars($row[2])); ?></cell><cell><?php echo htmlspecialchars(htmlspecialchars($row[3])); ?></cell><cell><?php echo htmlspecialchars(htmlspecialchars($row[4])); ?></cell><cell><?php echo htmlspecialchars(htmlspecialchars($row[5])); ?></cell><cell><?php echo htmlspecialchars(htmlspecialchars($row[6])); ?></cell></row>
 <?php
 	}
 
