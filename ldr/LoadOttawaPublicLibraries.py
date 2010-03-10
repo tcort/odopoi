@@ -15,9 +15,13 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# Data Set URL: http://www.biblioottawalibrary.ca/common/opldata.xml
+
 import xml.etree.ElementTree as ET
-print "INSERT INTO poi_category VALUES ('OPL', './img/library.png', '20,21', '0,0');\n";
+print "DELETE FROM poi_category WHERE id = 'OPL';";
+print "DELETE FROM poi WHERE poi_category_id = 'OPL';";
+print "INSERT INTO poi_category VALUES ('OPL', './img/library.png', '20,21', '0,0');";
 for marker in ET.parse('opldata.xml').getroot().getchildren():
-    sql = "INSERT INTO poi VALUES ('OPL','" + marker.attrib["lat"] + "','" + marker.attrib["lng"] + "','Ottawa Public Library - " + marker.attrib["location"].replace("'","''") + " ','Ottawa Public Library. Add a link to branch website and hours here.');"
+    sql = "INSERT INTO poi VALUES ('OPL','" + marker.attrib["lat"] + "','" + marker.attrib["lng"] + "','Ottawa Public Library - " + marker.attrib["location"].replace("'","''") + " ','" + marker.attrib["phone"] + "<br/>" + marker.attrib["addr"] + "<br/>" + "Ottawa, ON " + marker.attrib["postalc"] + "<br/><br/><a href=\"http://www.biblioottawalibrary.ca/explore/branches/" + marker.attrib["url"] + "\">Branch Web Page</a>');"
     print sql.encode('utf-8')
 

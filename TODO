@@ -3,7 +3,6 @@
  * Only add markers that aren't already on the screen.
 
 - Data Loaders
- * Ottawa Public Library loader needs to generate better descriptions.
  * A loader for GTFS (i.e. bus stop location) data needs to be written.
 
 - Graphics Improvements
