@@ -36,7 +36,6 @@
     var map;
     var markers;
     var my_markers = new Array();
-    var my_markers_old = new Array();
 
     OpenLayers.Lang.setCode("en");
 
@@ -64,15 +63,18 @@
         return false;
       }
 
+      while (my_markers.length > 0) {
+        var current_marker = my_markers.pop();
+        markers.removeMarker(current_marker);
+        current_marker.destroy();
+      }
+
       http_request.onreadystatechange = function() { alertContents(http_request); };
       http_request.open('GET', url, true);
       http_request.send(null);
     }
 
     function alertContents(http_request) {
-      my_markers_old = my_markers;
-      my_markers = new Array();
-
       if (http_request.readyState == 4) {
         if (http_request.status == 200) {
           var xmldoc = http_request.responseXML;
@@ -134,12 +136,6 @@
         } else {
           alert('There was a problem with the request.');
         }
-      }
-
-      while (my_markers_old.length > 0) {
-        var current_marker = my_markers_old.pop();
-        markers.removeMarker(current_marker);
-        current_marker.destroy();
       }
     }
 

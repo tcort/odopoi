@@ -4,6 +4,10 @@
 - Page Improvements
  * Make markers clickable. On click, display a bubble of info.
 
+- AJAX Marker Loading
+ * Only remove markers that are off the screen.
+ * Only add markers that aren't already on the screen.
+
 - Graphics Improvements
  * Get someone with mad skillz to design the icons.
  * Scale icons depending on zoom level.
