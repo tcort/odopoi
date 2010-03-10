@@ -44,9 +44,9 @@ function getPOI() {
 		$lat_min = ($tllat < $brlat) ? $tllat : $brlat;
 		$lat_max = ($tllat > $brlat) ? $tllat : $brlat;
 
-		$sql = "SELECT * FROM poi WHERE lat BETWEEN '" . $lat_min . "' AND '" . $lat_max . "' AND lon BETWEEN '" . $lon_min . "' AND '" . $lon_max . "' ORDER BY RAND() LIMIT 100;";
+		$sql = "SELECT lat, lon, title, description, icon, iconSize, iconOffset FROM poi JOIN poi_category ON poi.poi_category_id = poi_category.id WHERE lat BETWEEN '" . $lat_min . "' AND '" . $lat_max . "' AND lon BETWEEN '" . $lon_min . "' AND '" . $lon_max . "' ORDER BY RAND() LIMIT 100;";
 	} else {
-		$sql = "SELECT * FROM poi ORDER BY RAND() LIMIT 100;";
+		$sql = "SELECT lat, lon, title, description, icon, iconSize, iconOffset FROM poi JOIN poi_category ON poi.poi_category_id = poi_category.id ORDER BY RAND() LIMIT 100;";
 	}
 
 	$result = mysql_query($sql);

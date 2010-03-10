@@ -1,8 +1,5 @@
-- Database Design Improvements
- * Normalize DB
-
 - Page Improvements
- * Make markers clickable. On click, display a bubble of info.
+ * On marker click, display a bubble of info.
 
 - AJAX Marker Loading
  * Only remove markers that are off the screen.
@@ -13,3 +10,4 @@
  * Scale icons depending on zoom level.
 
 - GPS Export
+ * Write a script that dumps the database to a GPX file.

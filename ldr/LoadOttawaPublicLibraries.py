@@ -16,7 +16,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import xml.etree.ElementTree as ET
+print "INSERT INTO poi_category VALUES ('OPL', './img/library.png', '20,21', '0,0');\n";
 for marker in ET.parse('opldata.xml').getroot().getchildren():
-    sql = "INSERT INTO poi VALUES ('" + marker.attrib["lat"] + "','" + marker.attrib["lng"] + "','Ottawa Public Library - " + marker.attrib["location"].replace("'","''") + " ','Hours','./img/library.png','20,21','0,0');"
+    sql = "INSERT INTO poi VALUES ('OPL','" + marker.attrib["lat"] + "','" + marker.attrib["lng"] + "','Ottawa Public Library - " + marker.attrib["location"].replace("'","''") + " ','Ottawa Public Library. Add a link to branch website and hours here.');"
     print sql.encode('utf-8')
 

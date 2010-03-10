@@ -14,15 +14,21 @@
 -- You should have received a copy of the GNU Affero General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-DROP TABLE IF EXISTS poi;
-CREATE TABLE poi (
-	lat DECIMAL(15,12),
-	lon DECIMAL(15,12),
-	title VARCHAR(64),
-	description TEXT,
+DROP TABLE IF EXISTS poi_category;
+CREATE TABLE poi_category (
+	id CHAR(3) NOT NULL PRIMARY KEY,
 	icon VARCHAR(64),
 	iconSize VARCHAR(16),
 	iconOffset VARCHAR(16)
+);
+
+DROP TABLE IF EXISTS poi;
+CREATE TABLE poi (
+	poi_category_id CHAR(3) NOT NULL,
+	lat DECIMAL(15,12),
+	lon DECIMAL(15,12),
+	title VARCHAR(64),
+	description TEXT
 );
 
 CREATE INDEX coord on poi (lat,lon);
