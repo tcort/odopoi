@@ -40,6 +40,7 @@ body {
 
 #map {
 	width: 80%;
+	height: 80%;
 	float: left;
 	color: #666666;
 	background: #c7c7c7;
@@ -48,6 +49,7 @@ body {
 #sidebar {
 	float: right;
 	width: 20%;
+        height: 80%;
 	color: #666666;
 	background: #eeeec7;
 }
