@@ -37,6 +37,8 @@
     var markers;
     var my_markers = new Array();
 
+    OpenLayers.Lang.setCode("en");
+
     function makeRequest(url) {
       var http_request = false;
 
