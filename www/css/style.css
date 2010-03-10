@@ -24,8 +24,8 @@
 body {
 	font-family: "Trebuchet MS" Verdana, Arial, sans-serif;
 	font-size: .9em;
-	color: #000000;
-	background: #eeeeee;
+	color: #666666;
+	background: #eeeec7;
 }
 
 #header {
@@ -38,18 +38,8 @@ body {
 	background: #c70033;
 }
 
-#footer {
-	clear:both;
-	text-align: center;
-	border-top: dotted 1px #cccccc;
-	padding: 10px 0 10px 0;
-	color: #666666;
-	background: #c7c7c7;
-}
-
 #map {
 	width: 80%;
-	height: 80%;
 	float: left;
 	color: #666666;
 	background: #c7c7c7;
@@ -58,7 +48,6 @@ body {
 #sidebar {
 	float: right;
 	width: 20%;
-	height: 80%;
 	color: #666666;
 	background: #eeeec7;
 }

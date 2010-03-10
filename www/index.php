@@ -192,17 +192,8 @@
     <div id="sidetxt">
       <p><em>Warning</em>: The points of interest you see on this page are for testing purposes only and may be totally inaccurate.</p>
       <p>Help this app get from Alpha to Beta by contributing to <a href="http://opendataottawa.ca">Open Data Ottawa</a>.</p>
+      <p>Copyright &copy; 2010 <a href="http://www.tomcort.com/">Thomas Cort</a><br/><small>This application is <a href="http://www.gnu.org/philosophy/free-sw.html">Free Software</a>. Get the source code <a href="http://github.com/tcort/odopoi">here</a>.</small></p>
     </div>
   </div>
-  <div id="footer">
-    <p>
-      <a href="http://www.fsf.org/register_form?referrer=71"><img src="./img/fsf-member.png" border="0" alt="[FSF Associate Member]" width="88" height="31" /></a>
-      <a href="http://endsoftpatents.org/innovating-without-patents"><img border="0" src="./img/esp-button.png" alt="Innovating without Patents"/></a>
-      <a href="http://www.fsf.org/licensing/licenses/agpl-3.0.html"><img src="./img/agplv3-88x31.png" alt="[AGPLv3+ Licensed]" border="0" width="88" height="31" /></a>
-    </p>
-    <p>Copyright &copy; 2010 <a href="http://www.tomcort.com/">Thomas Cort</a> &lt;<a href="mailto:linuxgeek@gmail.com">linuxgeek@gmail.com</a>&gt;</p>
-    <p><small>This application is <a href="http://www.gnu.org/philosophy/free-sw.html">Free Software</a>. Get the source code <a href="http://github.com/tcort/odopoi">here</a>.</small></p>
-  </div>
-
 </body>
 </html>
