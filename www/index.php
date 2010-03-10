@@ -165,8 +165,9 @@
   <div id="header"><h1>Welcome to OpenDataMap.ca<sup>Alpha</sup>!</h1></div>
   <div id="map"></div>
   <div id="sidebar">
-    <p>&nbsp;</p>
-    <p><em>Warning</em>: The points of interest you see on this page are for testing purposes only and may be totally inaccurate. <a href="http://opendataottawa.ca">Help this app get to Beta</a>.</p>
+    <div id="sidetxt">
+      <p><em>Warning</em>: The points of interest you see on this page are for testing purposes only and may be totally inaccurate. <a href="http://opendataottawa.ca">Help this app get to Beta</a>.</p>
+    </div>
   </div>
   <div id="footer">
     <p>

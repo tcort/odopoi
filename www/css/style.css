@@ -57,10 +57,12 @@ body {
 
 #sidebar {
 	float: right;
-	width: 16%;
+	width: 20%;
 	height: 80%;
 	color: #666666;
 	background: #eeeec7;
-	padding-left: 2%;
-	padding-right: 2%;
+}
+
+#sidetxt {
+	padding: 10px;
 }
