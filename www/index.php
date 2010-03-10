@@ -96,7 +96,29 @@
                   var size = new OpenLayers.Size(21,20);
                   var offset = new OpenLayers.Pixel(0,0);
                   var icon = new OpenLayers.Icon(arr[4],size,offset);
-                  var marker = new OpenLayers.Marker(new OpenLayers.LonLat(arr[1], arr[0]).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject()), icon);
+                  var lonLatMarker = new OpenLayers.LonLat(arr[1], arr[0]).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+                  var marker = new OpenLayers.Marker(lonLatMarker, icon);
+
+                  var feature = new OpenLayers.Feature(markers, lonLatMarker);
+                  feature.closeBox = true;
+                  feature.popupClass = OpenLayers.Class(OpenLayers.Popup.AnchoredBubble, {minSize: new OpenLayers.Size(300, 180) } );
+                  feature.data.popupContentHTML = 'Hello World';
+                  feature.data.overflow = "hidden";
+                  marker.feature = feature;
+
+                  var markerClick = function(evt) {
+                    if (this.popup == null) {
+                      this.popup = this.createPopup(this.closeBox);
+                      map.addPopup(this.popup);
+                      this.popup.show();
+                    } else {
+                      this.popup.toggle();
+                    }
+                    OpenLayers.Event.stop(evt);
+                  };
+
+                  marker.events.register("mousedown", feature, markerClick);
+
                   markers.addMarker(marker);
                   my_markers.push(marker);
                 }
@@ -109,7 +131,7 @@
       }
     }
 
-    function moveend_listener(event) {
+    function moveend_listener(evt) {
       while (my_markers.length > 0) {
         var current_marker = my_markers.pop();
         markers.removeMarker(current_marker);
