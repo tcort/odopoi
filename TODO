@@ -1,9 +1,10 @@
-- Page Improvements
- * On marker click, display a bubble of info.
-
 - AJAX Marker Loading
  * Only remove markers that are off the screen.
  * Only add markers that aren't already on the screen.
+
+- Data Loaders
+ * Ottawa Public Library loader needs to generate better descriptions.
+ * A loader for GTFS (i.e. bus stop location) data needs to be written.
 
 - Graphics Improvements
  * Get someone with mad skillz to design the icons.

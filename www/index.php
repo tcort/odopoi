@@ -110,7 +110,7 @@
                   var feature = new OpenLayers.Feature(markers, lonLatMarker);
                   feature.closeBox = true;
                   feature.popupClass = OpenLayers.Class(OpenLayers.Popup.AnchoredBubble, {minSize: new OpenLayers.Size(300, 180) } );
-                  feature.data.popupContentHTML = 'Hello World';
+                  feature.data.popupContentHTML = '<b>' + arr[2] + '</b><br/>' + arr[3];
                   feature.data.overflow = "hidden";
                   marker.feature = feature;
 
