@@ -1,0 +1,5 @@
+AddDefaultCharset utf-8
+AddCharset UTF-8 .php
+AddCharset UTF-8 .html
+AddCharset UTF-8 .xml
+AddCharset UTF-8 .js
