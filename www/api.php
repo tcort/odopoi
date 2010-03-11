@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+mb_language('uni'); mb_internal_encoding('UTF-8');
+
 require_once('config.php');
 
 function db_connect() {
@@ -29,7 +31,7 @@ function db_disconnect() {
 }
 
 function getPOI() {
-	header("Content-type: text/xml; charset=UTF-8");
+	header("Content-type: text/xml; charset=utf-8");
 	echo '<?xml version="1.0" ?>';
 
 	$tllon = $_REQUEST["tllon"];
@@ -63,7 +65,7 @@ function getPOI() {
 <?php
 	while ($row = mysql_fetch_row($result)) {
 ?>
-<row><cell><?php echo htmlspecialchars(htmlspecialchars($row[0])); ?></cell><cell><?php echo htmlspecialchars(htmlspecialchars($row[1])); ?></cell><cell><?php echo htmlspecialchars(htmlspecialchars($row[2])); ?></cell><cell><?php echo htmlspecialchars(htmlspecialchars($row[3])); ?></cell><cell><?php echo htmlspecialchars(htmlspecialchars($row[4])); ?></cell><cell><?php echo htmlspecialchars(htmlspecialchars($row[5])); ?></cell><cell><?php echo htmlspecialchars(htmlspecialchars($row[6])); ?></cell></row>
+<row><cell><?php echo htmlspecialchars($row[0]); ?></cell><cell><?php echo htmlspecialchars($row[1]); ?></cell><cell><?php echo htmlspecialchars($row[2]); ?></cell><cell><?php echo htmlspecialchars($row[3]); ?></cell><cell><?php echo htmlspecialchars($row[4]); ?></cell><cell><?php echo htmlspecialchars($row[5]); ?></cell><cell><?php echo htmlspecialchars($row[6]); ?></cell></row>
 <?php
 	}
 

@@ -20,7 +20,7 @@ CREATE TABLE poi_category (
 	icon VARCHAR(64),
 	iconSize VARCHAR(16),
 	iconOffset VARCHAR(16)
-);
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS poi;
 CREATE TABLE poi (
@@ -29,6 +29,6 @@ CREATE TABLE poi (
 	lon DECIMAL(15,12),
 	title VARCHAR(64),
 	description TEXT
-);
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE INDEX coord on poi (lat,lon);
