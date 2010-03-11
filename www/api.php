@@ -15,7 +15,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-mb_language('uni'); mb_internal_encoding('UTF-8');
+mb_language('uni');
+mb_internal_encoding('UTF-8');
 
 require_once('config.php');
 
@@ -24,6 +25,12 @@ function db_connect() {
 
 	@mysql_connect($hostname, $username, $password) or die("Unable to connect to database");
 	@mysql_select_db($database) or die("Unable to select database");
+
+	@mysql_set_charset('utf8');
+
+	@mysql_query("SET NAMES 'utf8' COLLATE 'utf8_unicode_ci'");
+	@mysql_query("SET CHARACTER SET 'utf8'");
+	@mysql_query("SET collation_connection = 'utf8_general_ci'");
 }
 
 function db_disconnect() {
@@ -32,7 +39,7 @@ function db_disconnect() {
 
 function getPOI() {
 	header("Content-type: text/xml; charset=utf-8");
-	echo '<?xml version="1.0" ?>';
+	echo '<?xml version="1.0" encoding="utf-8"?>';
 
 	$tllon = $_REQUEST["tllon"];
 	$tllat = $_REQUEST["tllat"];

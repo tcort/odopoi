@@ -18,6 +18,9 @@
 # Data Set URL: http://www.biblioottawalibrary.ca/common/opldata.xml
 
 import xml.etree.ElementTree as ET
+print "SET NAMES 'utf8' COLLATE 'utf8_unicode_ci';"
+print "SET CHARACTER SET 'utf8';"
+print "SET collation_connection = 'utf8_general_ci';"
 print "DELETE FROM poi_category WHERE id = 'OPL';";
 print "DELETE FROM poi WHERE poi_category_id = 'OPL';";
 print "INSERT INTO poi_category VALUES ('OPL', './img/library.png', '20,21', '0,0');";

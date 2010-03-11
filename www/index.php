@@ -14,6 +14,11 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+mb_language('uni');
+mb_internal_encoding('UTF-8');
+header('Content-type: text/html; charset=utf-8');
+
 ?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
@@ -23,10 +28,10 @@
 
   <link rel="stylesheet" type="text/css" href="css/style.css" media="screen">
 
-  <script type="text/javascript" src="http://www.openlayers.org/api/OpenLayers.js"></script>
-  <script type="text/javascript" src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
+  <script type="text/javascript" src="http://www.openlayers.org/api/OpenLayers.js" charset="utf-8"></script>
+  <script type="text/javascript" src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js" charset="utf-8"></script>
 
-  <script type="text/javascript">
+  <script type="text/javascript" charset="utf-8">
     // Coordinates for Ottawa, ON
     var lat=45.420833
     var lon=-75.69

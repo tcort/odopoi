@@ -14,21 +14,25 @@
 -- You should have received a copy of the GNU Affero General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+SET NAMES 'utf8' COLLATE 'utf8_unicode_ci';
+SET CHARACTER SET 'utf8';
+SET collation_connection = 'utf8_general_ci';
+
 DROP TABLE IF EXISTS poi_category;
 CREATE TABLE poi_category (
-	id CHAR(3) NOT NULL PRIMARY KEY,
-	icon VARCHAR(64),
-	iconSize VARCHAR(16),
-	iconOffset VARCHAR(16)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+	id CHAR(3) COLLATE utf8_unicode_ci NOT NULL PRIMARY KEY,
+	icon VARCHAR(64) COLLATE utf8_unicode_ci,
+	iconSize VARCHAR(16) COLLATE utf8_unicode_ci,
+	iconOffset VARCHAR(16) COLLATE utf8_unicode_ci
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 DROP TABLE IF EXISTS poi;
 CREATE TABLE poi (
-	poi_category_id CHAR(3) NOT NULL,
+	poi_category_id CHAR(3) COLLATE utf8_unicode_ci NOT NULL,
 	lat DECIMAL(15,12),
 	lon DECIMAL(15,12),
-	title VARCHAR(64),
-	description TEXT
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+	title VARCHAR(64) COLLATE utf8_unicode_ci,
+	description TEXT COLLATE utf8_unicode_ci
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE INDEX coord on poi (lat,lon);
