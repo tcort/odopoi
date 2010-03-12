@@ -1,9 +1,11 @@
 - AJAX Marker Loading
  * Only remove markers that are off the screen.
  * Only add markers that aren't already on the screen.
+ * As the user zooms out, display fewer markers so that it doesn't look 
+like a giant blob.
 
 - Data Loaders
- * A loader for GTFS (i.e. bus stop location) data needs to be written.
+ * Write them as the data becomes available.
 
 - Graphics Improvements
  * Get someone with mad skillz to design the icons.
