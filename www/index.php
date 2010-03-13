@@ -68,12 +68,6 @@ header('Content-type: text/html; charset=utf-8');
         return false;
       }
 
-      while (my_markers.length > 0) {
-        var current_marker = my_markers.pop();
-        markers.removeMarker(current_marker);
-        current_marker.destroy();
-      }
-
       http_request.onreadystatechange = function() { alertContents(http_request); };
       http_request.open('GET', url, true);
       http_request.send(null);
@@ -86,6 +80,12 @@ header('Content-type: text/html; charset=utf-8');
           var root = xmldoc.getElementsByTagName('root').item(0);
 
           if (root != null) {
+
+           while (my_markers.length > 0) {
+              var current_marker = my_markers.pop();
+              markers.removeMarker(current_marker);
+              current_marker.destroy();
+            }
 
             var iNode = 0;
             for (iNode = 0; iNode < root.childNodes.length; iNode++) {
