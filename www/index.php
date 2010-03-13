@@ -33,10 +33,10 @@ header('Content-type: text/html; charset=utf-8');
 
   <script type="text/javascript" charset="utf-8">
     // Coordinates for Ottawa, ON
-    var lat=45.420833
-    var lon=-75.69
+    var lat=45.420833;
+    var lon=-75.69;
 
-    var zoom=12
+    var zoom=12;
         
     var map;
     var markers;
@@ -73,6 +73,34 @@ header('Content-type: text/html; charset=utf-8');
       http_request.send(null);
     }
 
+    function marker_is_in_view(marker) {
+      var tlLonLat = map.getLonLatFromPixel(new OpenLayers.Pixel(1,1)).
+            transform(map.getProjectionObject(),map.displayProjection);
+      var mapsize = map.getSize();
+      var brLonLat = map.getLonLatFromPixel(new OpenLayers.Pixel(mapsize.w - 1, mapsize.h - 1)).
+            transform(map.getProjectionObject(),map.displayProjection);
+
+      var tlLonLatF = new OpenLayers.LonLat(tlLonLat.lon, tlLonLat.lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+      var brLonLatF = new OpenLayers.LonLat(brLonLat.lon, brLonLat.lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+
+
+      if (tlLonLatF.lon <= marker.lonlat.lon && marker.lonlat.lon <= brLonLatF.lon &&
+          tlLonLatF.lat >= marker.lonlat.lat && marker.lonlat.lat >= brLonLatF.lat) {
+        return 1;
+      } else {
+        return 0;
+      }
+    }
+
+    function marker_in_my_markers(marker) {
+      for (var i = 0; i < my_markers.length; i++) {
+        if (my_markers[i].lonlat.lon == marker.lonlat.lon && my_markers[i].lonlat.lat == marker.lonlat.lat) {
+          return 1;
+        }
+      }
+      return 0;
+    }
+
     function alertContents(http_request) {
       if (http_request.readyState == 4) {
         if (http_request.status == 200) {
@@ -80,12 +108,17 @@ header('Content-type: text/html; charset=utf-8');
           var root = xmldoc.getElementsByTagName('root').item(0);
 
           if (root != null) {
-
+           var my_markers_2 = new Array();
            while (my_markers.length > 0) {
               var current_marker = my_markers.pop();
-              markers.removeMarker(current_marker);
-              current_marker.destroy();
+              if (marker_is_in_view(current_marker) == 1) {
+                my_markers_2.push(current_marker);
+              } else {
+                markers.removeMarker(current_marker);
+                current_marker.destroy();
+              }
             }
+            my_markers = my_markers_2;
 
             var iNode = 0;
             for (iNode = 0; iNode < root.childNodes.length; iNode++) {
@@ -112,28 +145,32 @@ header('Content-type: text/html; charset=utf-8');
                   var lonLatMarker = new OpenLayers.LonLat(arr[1], arr[0]).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
                   var marker = new OpenLayers.Marker(lonLatMarker, icon);
 
-                  var feature = new OpenLayers.Feature(markers, lonLatMarker);
-                  feature.closeBox = true;
-                  feature.popupClass = OpenLayers.Class(OpenLayers.Popup.AnchoredBubble, {minSize: new OpenLayers.Size(300, 180) } );
-                  feature.data.popupContentHTML = '<b>' + arr[2] + '</b><br/>' + arr[3];
-                  feature.data.overflow = "hidden";
-                  marker.feature = feature;
+                  if (marker_in_my_markers(marker) == 1) {
+                    marker.destroy();
+                  } else {
+                    var feature = new OpenLayers.Feature(markers, lonLatMarker);
+                    feature.closeBox = true;
+                    feature.popupClass = OpenLayers.Class(OpenLayers.Popup.AnchoredBubble, {minSize: new OpenLayers.Size(300, 180) } );
+                    feature.data.popupContentHTML = '<b>' + arr[2] + '</b><br/>' + arr[3];
+                    feature.data.overflow = "hidden";
+                    marker.feature = feature;
 
-                  var markerClick = function(evt) {
-                    if (this.popup == null) {
-                      this.popup = this.createPopup(this.closeBox);
-                      map.addPopup(this.popup);
-                      this.popup.show();
-                    } else {
-                      this.popup.toggle();
-                    }
-                    OpenLayers.Event.stop(evt);
-                  };
+                    var markerClick = function(evt) {
+                      if (this.popup == null) {
+                        this.popup = this.createPopup(this.closeBox);
+                        map.addPopup(this.popup);
+                        this.popup.show();
+                      } else {
+                        this.popup.toggle();
+                      }
+                      OpenLayers.Event.stop(evt);
+                    };
 
-                  marker.events.register("mousedown", feature, markerClick);
+                    marker.events.register("mousedown", feature, markerClick);
 
-                  markers.addMarker(marker);
-                  my_markers.push(marker);
+                    markers.addMarker(marker);
+                    my_markers.push(marker);
+                  }
                 }
               }
             }

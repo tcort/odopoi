@@ -1,6 +1,4 @@
-- AJAX Marker Loading
- * Only remove markers that are off the screen.
- * Only add markers that aren't already on the screen.
+- AJAX Marker Management
  * As the user zooms out, display fewer markers so that it doesn't look 
 like a giant blob.
 
