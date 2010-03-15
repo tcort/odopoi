@@ -45,15 +45,16 @@ function getPOI() {
 	$tllat = $_REQUEST["tllat"];
 	$brlon = $_REQUEST["brlon"];
 	$brlat = $_REQUEST["brlat"];
+	$zoom  = $_REQUEST["zoom"];
 
 	/* TODO: adjust number of results and icons based on zoom factor */
-	if (is_numeric($tllon) && is_numeric($tllat) && is_numeric($brlon) && is_numeric($brlat)) {
+	if (is_numeric($tllon) && is_numeric($tllat) && is_numeric($brlon) && is_numeric($brlat) & is_numeric($zoom) && $zoom >= 0) {
 		$lon_min = ($tllon < $brlon) ? $tllon : $brlon;
 		$lon_max = ($tllon > $brlon) ? $tllon : $brlon;
 		$lat_min = ($tllat < $brlat) ? $tllat : $brlat;
 		$lat_max = ($tllat > $brlat) ? $tllat : $brlat;
 
-		$sql = "SELECT lat, lon, title, description, icon, iconSize, iconOffset FROM poi JOIN poi_category ON poi.poi_category_id = poi_category.id WHERE lat BETWEEN '" . $lat_min . "' AND '" . $lat_max . "' AND lon BETWEEN '" . $lon_min . "' AND '" . $lon_max . "' ORDER BY RAND() LIMIT 500;";
+		$sql = "SELECT lat, lon, title, description, icon, iconSize, iconOffset FROM poi JOIN poi_category ON poi.poi_category_id = poi_category.id WHERE lat BETWEEN '" . $lat_min . "' AND '" . $lat_max . "' AND lon BETWEEN '" . $lon_min . "' AND '" . $lon_max . "' AND zoom <= '" . $zoom . "' ORDER BY RAND() LIMIT 500;";
 	} else {
 		$sql = "SELECT lat, lon, title, description, icon, iconSize, iconOffset FROM poi JOIN poi_category ON poi.poi_category_id = poi_category.id ORDER BY RAND() LIMIT 500;";
 	}

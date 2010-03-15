@@ -25,6 +25,6 @@ print "DELETE FROM poi_category WHERE id = 'OPL';";
 print "DELETE FROM poi WHERE poi_category_id = 'OPL';";
 print "INSERT INTO poi_category VALUES ('OPL', './img/library.png', '20,21', '0,0');";
 for marker in ET.parse('opldata.xml').getroot().getchildren():
-    sql = "INSERT INTO poi VALUES ('OPL','" + marker.attrib["lat"] + "','" + marker.attrib["lng"] + "','Ottawa Public Library - " + marker.attrib["location"].replace("'","''") + " ','" + marker.attrib["phone"] + "<br/>" + marker.attrib["addr"] + "<br/>" + "Ottawa, ON " + marker.attrib["postalc"] + "<br/><br/><a href=\"http://www.biblioottawalibrary.ca/explore/branches/" + marker.attrib["url"] + "\">Branch Web Page</a>');"
+    sql = "INSERT INTO poi VALUES ('OPL','" + marker.attrib["lat"] + "','" + marker.attrib["lng"] + "','0','Ottawa Public Library - " + marker.attrib["location"].replace("'","''") + " ','" + marker.attrib["phone"] + "<br/>" + marker.attrib["addr"] + "<br/>" + "Ottawa, ON " + marker.attrib["postalc"] + "<br/><br/><a href=\"http://www.biblioottawalibrary.ca/explore/branches/" + marker.attrib["url"] + "\">Branch Web Page</a>');"
     print sql.encode('utf-8')
 

@@ -1,13 +1,8 @@
 - AJAX Marker Management
- * As the user zooms out, display fewer markers so that it doesn't look 
-like a giant blob.
-
-- Data Loaders
- * Write them as the data becomes available.
+ * Write a script to precompute which zoom level each POI should be visible at.
 
 - Graphics Improvements
- * Get someone with mad skillz to design the icons.
- * Scale icons depending on zoom level.
+ * Document what needs to be done so that someone with mad skillz can design cool icons.
 
 - GPS Export
  * Write a script that dumps the database to a GPX file.

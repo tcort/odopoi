@@ -31,6 +31,7 @@ CREATE TABLE poi (
 	poi_category_id CHAR(3) COLLATE utf8_unicode_ci NOT NULL,
 	lat DECIMAL(15,12),
 	lon DECIMAL(15,12),
+	zoom INTEGER NOT NULL DEFAULT '0',
 	title VARCHAR(64) COLLATE utf8_unicode_ci,
 	description TEXT COLLATE utf8_unicode_ci
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 CHARACTER SET utf8 COLLATE utf8_general_ci;

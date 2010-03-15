@@ -55,7 +55,7 @@ if (($handle = fopen("stops.txt", "r")) !== FALSE) {
 			$stop_lat = array_search("stop_lat", $line);
 			$stop_lon = array_search("stop_lon", $line);
 		} else {
-			$sql = "INSERT INTO poi VALUES ('BUS','" . trim($line[$stop_lat]) . "','" . trim($line[$stop_lon]) . "','" . $poi_title . "','" . str_replace("'", "''", trim($line[$stop_name])) . "');\n";
+			$sql = "INSERT INTO poi VALUES ('BUS','" . trim($line[$stop_lat]) . "','" . trim($line[$stop_lon]) . "','0','" . $poi_title . "','" . str_replace("'", "''", trim($line[$stop_name])) . "');\n";
 			print $sql;
 		}
 	}
