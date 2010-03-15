@@ -227,14 +227,13 @@ header('Content-type: text/html; charset=utf-8');
   </script>
 </head>
 <body onload="init();">
-
   <div id="header"><h1>Welcome to OpenDataMap.ca<sup>Alpha</sup>!</h1></div>
   <div id="map"></div>
   <div id="sidebar">
     <div id="sidetxt">
       <p><em>Warning</em>: The points of interest you see on this page are for testing purposes only and may be totally inaccurate.</p>
       <p>Help this app get from Alpha to Beta by contributing data, time, ideas, and/or code to <a href="http://opendataottawa.ca">Open Data Ottawa</a>.</p>
-      <p>Copyright &copy; 2010 <a href="http://www.tomcort.com/">Thomas Cort</a><br/><small>This application is <a href="http://www.gnu.org/philosophy/free-sw.html">Free Software</a>. Get the source code <a href="http://github.com/tcort/odopoi">here</a>.</small></p>
+      <p>Copyright &copy; 2010 <a href="http://www.tomcort.com/">Thomas Cort</a><br/><small>This application is <a href="http://www.gnu.org/philosophy/free-sw.html">Free Software</a>. Get the source code <a href="http://github.com/tcort/odopoi">here</a>. Get a dump of the database in <a href="http://www.topografix.com/gpx.asp">GPX</a> format <a href="dmp.gpx.gz">here</a>.</small></p>
     </div>
   </div>
 </body>

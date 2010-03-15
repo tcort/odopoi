@@ -3,6 +3,3 @@
 
 - Graphics Improvements
  * Document what needs to be done so that someone with mad skillz can design cool icons.
-
-- GPS Export
- * Write a script that dumps the database to a GPX file.
