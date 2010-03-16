@@ -23,7 +23,7 @@ print "SET CHARACTER SET 'utf8';\n";
 print "SET collation_connection = 'utf8_general_ci';\n";
 print "DELETE FROM poi_category WHERE id = 'BUS';\n";
 print "DELETE FROM poi WHERE poi_category_id = 'BUS';\n";
-print "INSERT INTO poi_category VALUES ('BUS', './icons/bus.png');\n";
+print "INSERT INTO poi_category VALUES ('BUS', './icon/bus.png');\n";
 
 $poi_title = "Bus Stop";
 
