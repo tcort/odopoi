@@ -252,7 +252,7 @@ header('Content-type: text/html; charset=utf-8');
       <p><em>Warning</em>: The points of interest you see on this page are for testing purposes only and may be totally inaccurate.</p>
       <p>Help this app get from Alpha to Beta by contributing data, time, ideas, and/or code to <a href="http://opendataottawa.ca">Open Data Ottawa</a>.</p>
       <p>Copyright &copy; 2010 <a href="http://www.tomcort.com/">Thomas Cort</a><br/><small>This application is <a href="http://www.gnu.org/philosophy/free-sw.html">Free Software</a>. Get the source code <a href="http://github.com/tcort/odopoi">here</a>. Get a dump of the database in <a href="http://www.topografix.com/gpx.asp">GPX</a> format <a href="dmp.gpx.gz">here</a>.</small></p>
-      <p><small>Maps are CC-By-SA 2.0 by <a href="http://www.openstreetmap.org/">OpenStreetMap</a>. Icons are CC-By-SA 3.0 by <a href="http://code.google.com/p/google-maps-icons/">Maps icons collection</a>.</small></p>
+      <p><small>Maps are <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-By-SA 2.0</a> by <a href="http://www.openstreetmap.org/">OpenStreetMap</a>. Map display is <a href="http://svn.openlayers.org/trunk/openlayers/license.txt">BSD-style</a> by <a href="http://openlayers.org/">OpenLayers</a>. Marker icons are <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC-By-SA 3.0</a> by <a href="http://code.google.com/p/google-maps-icons/">Maps icons collection</a>.</small></p>
     </div>
   </div>
 </body>
