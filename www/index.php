@@ -29,7 +29,7 @@ header('Content-type: text/html; charset=utf-8');
 
   <link rel="stylesheet" type="text/css" href="css/style.css" media="screen">
 
-  <script type="text/javascript" src="http://www.openlayers.org/api/OpenLayers.js" charset="utf-8"></script>
+  <script type="text/javascript" src="./openlayers/OpenLayers.js" charset="utf-8"></script>
   <script type="text/javascript" src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js" charset="utf-8"></script>
 
   <script type="text/javascript" charset="utf-8">
