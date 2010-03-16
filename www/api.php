@@ -52,11 +52,11 @@ function getPOI() {
 		$lat_min = ($tllat < $brlat) ? $tllat : $brlat;
 		$lat_max = ($tllat > $brlat) ? $tllat : $brlat;
 
-		$sql = "SELECT lat, lon, title, description, icon, iconSize, iconOffset FROM poi JOIN poi_category ON poi.poi_category_id = poi_category.id WHERE lat BETWEEN '" . $lat_min . "' AND '" . $lat_max . "' AND lon BETWEEN '" . $lon_min . "' AND '" . $lon_max . "' AND zoom <= '" . $zoom . "' ORDER BY RAND() LIMIT 500;";
+		$sql = "SELECT lat, lon, title, description, icon FROM poi JOIN poi_category ON poi.poi_category_id = poi_category.id WHERE lat BETWEEN '" . $lat_min . "' AND '" . $lat_max . "' AND lon BETWEEN '" . $lon_min . "' AND '" . $lon_max . "' AND zoom <= '" . $zoom . "' ORDER BY RAND() LIMIT 500;";
 	} else {
 		// The user gave us crappy input so we give him/her crappy output.
 		// TODO: throw some sort of error here and add javascript in index.php to catch the error
-		$sql = "SELECT lat, lon, title, description, icon, iconSize, iconOffset FROM poi JOIN poi_category ON poi.poi_category_id = poi_category.id ORDER BY RAND() LIMIT 500;";
+		$sql = "SELECT lat, lon, title, description, icon FROM poi JOIN poi_category ON poi.poi_category_id = poi_category.id ORDER BY RAND() LIMIT 500;";
 	}
 
 	$result = mysql_query($sql);
@@ -74,7 +74,7 @@ function getPOI() {
 <?php
 	while ($row = mysql_fetch_row($result)) {
 ?>
-<row><cell><?php echo htmlspecialchars($row[0]); ?></cell><cell><?php echo htmlspecialchars($row[1]); ?></cell><cell><?php echo htmlspecialchars($row[2]); ?></cell><cell><?php echo htmlspecialchars($row[3]); ?></cell><cell><?php echo htmlspecialchars($row[4]); ?></cell><cell><?php echo htmlspecialchars($row[5]); ?></cell><cell><?php echo htmlspecialchars($row[6]); ?></cell></row>
+<row><cell><?php echo htmlspecialchars($row[0]); ?></cell><cell><?php echo htmlspecialchars($row[1]); ?></cell><cell><?php echo htmlspecialchars($row[2]); ?></cell><cell><?php echo htmlspecialchars($row[3]); ?></cell><cell><?php echo htmlspecialchars($row[4]); ?></cell></row>
 <?php
 	}
 

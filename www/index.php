@@ -150,8 +150,8 @@ header('Content-type: text/html; charset=utf-8');
                 if (arr.length > 0) {
                   // Build a new marker
 
-                  var size = new OpenLayers.Size(21,20);
-                  var offset = new OpenLayers.Pixel(0,0);
+                  var size = new OpenLayers.Size(32,37);
+                  var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
                   var icon = new OpenLayers.Icon(arr[4],size,offset);
                   var lonLatMarker = new OpenLayers.LonLat(arr[1], arr[0]).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
                   var marker = new OpenLayers.Marker(lonLatMarker, icon);
@@ -217,7 +217,7 @@ header('Content-type: text/html; charset=utf-8');
     function init() {
 
       map = new OpenLayers.Map ("map", {
-        controls: [new OpenLayers.Control.Navigation(), new OpenLayers.Control.PanZoomBar(), new OpenLayers.Control.Attribution()],
+        controls: [new OpenLayers.Control.Navigation(), new OpenLayers.Control.PanZoomBar()],
         maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),
         maxResolution: 156543.0399,
         numZoomLevels: 19,
@@ -229,6 +229,9 @@ header('Content-type: text/html; charset=utf-8');
  
       layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
       map.addLayer(layerMapnik);
+
+      var layerTah = new OpenLayers.Layer.OSM.Osmarender("Tiles@Home");
+      map.addLayer(layerTah);
 
       markers = new OpenLayers.Layer.Markers("Open Data Ottawa Points of Interest");
       map.addLayer(markers);
@@ -249,6 +252,7 @@ header('Content-type: text/html; charset=utf-8');
       <p><em>Warning</em>: The points of interest you see on this page are for testing purposes only and may be totally inaccurate.</p>
       <p>Help this app get from Alpha to Beta by contributing data, time, ideas, and/or code to <a href="http://opendataottawa.ca">Open Data Ottawa</a>.</p>
       <p>Copyright &copy; 2010 <a href="http://www.tomcort.com/">Thomas Cort</a><br/><small>This application is <a href="http://www.gnu.org/philosophy/free-sw.html">Free Software</a>. Get the source code <a href="http://github.com/tcort/odopoi">here</a>. Get a dump of the database in <a href="http://www.topografix.com/gpx.asp">GPX</a> format <a href="dmp.gpx.gz">here</a>.</small></p>
+      <p><small>Maps are CC-By-SA 2.0 by <a href="http://www.openstreetmap.org/">OpenStreetMap</a>. Icons are CC-By-SA 3.0 by <a href="http://code.google.com/p/google-maps-icons/">Maps icons collection</a>.</small></p>
     </div>
   </div>
 </body>
