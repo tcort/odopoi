@@ -10,3 +10,9 @@ schema.
 
 - Data Loaders
  * Re-write the Ottawa Public Library loader in PHP.
+
+- Database
+ * optimize the data model and SQL queries.
+
+- Translation
+ * l10n, i18n, and then translate to French.
