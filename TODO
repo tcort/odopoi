@@ -5,6 +5,8 @@ visible at.
 - AJAX API
  * Design and implement a caching mechanism to avoid a DB query and XML 
 generation every time the map is displayed, moved, or zoomed.
+ * Use a standards based XML format (GPX) or define an appropriate 
+schema.
 
 - Data Loaders
  * Re-write the Ottawa Public Library loader in PHP.

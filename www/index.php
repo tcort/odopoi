@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+// UTF-8 enable the PHP and HTML
 mb_language('uni');
 mb_internal_encoding('UTF-8');
 header('Content-type: text/html; charset=utf-8');
@@ -38,12 +39,14 @@ header('Content-type: text/html; charset=utf-8');
 
     var zoom=12;
         
-    var map;
-    var markers;
-    var my_markers = new Array();
+    var map; // holds Map object
+    var markers; // holds Markers object
+    var my_markers = new Array(); // our list of Markers
 
+    // Set the language to English
     OpenLayers.Lang.setCode("en");
 
+    // AJAX request
     function makeRequest(url) {
       var http_request = false;
 
@@ -57,6 +60,7 @@ header('Content-type: text/html; charset=utf-8');
           http_request = new ActiveXObject("Msxml2.XMLHTTP");
         } catch (e) {
           try {
+            // Last chance
             http_request = new ActiveXObject("Microsoft.XMLHTTP");
           } catch (e) {
           }
@@ -73,6 +77,7 @@ header('Content-type: text/html; charset=utf-8');
       http_request.send(null);
     }
 
+    // Determines if the marker is within the bounds of the visible part of the map at the current zoom level
     function marker_is_in_view(marker) {
       var tlLonLat = map.getLonLatFromPixel(new OpenLayers.Pixel(1,1)).
             transform(map.getProjectionObject(),map.displayProjection);
@@ -83,7 +88,6 @@ header('Content-type: text/html; charset=utf-8');
       var tlLonLatF = new OpenLayers.LonLat(tlLonLat.lon, tlLonLat.lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
       var brLonLatF = new OpenLayers.LonLat(brLonLat.lon, brLonLat.lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
 
-
       if (tlLonLatF.lon <= marker.lonlat.lon && marker.lonlat.lon <= brLonLatF.lon &&
           tlLonLatF.lat >= marker.lonlat.lat && marker.lonlat.lat >= brLonLatF.lat) {
         return 1;
@@ -92,6 +96,7 @@ header('Content-type: text/html; charset=utf-8');
       }
     }
 
+    // Determines if the parameter is in the my_markers array
     function marker_in_my_markers(marker) {
       for (var i = 0; i < my_markers.length; i++) {
         if (my_markers[i].lonlat.lon == marker.lonlat.lon && my_markers[i].lonlat.lat == marker.lonlat.lat) {
@@ -101,6 +106,7 @@ header('Content-type: text/html; charset=utf-8');
       return 0;
     }
 
+    // Handler for the AJAX response
     function alertContents(http_request) {
       if (http_request.readyState == 4) {
         if (http_request.status == 200) {
@@ -108,6 +114,8 @@ header('Content-type: text/html; charset=utf-8');
           var root = xmldoc.getElementsByTagName('root').item(0);
 
           if (root != null) {
+           // Remove markers that aren't within the bounds of the visible part of the map at the current zoom level
+           // Keep markers that are within the bounds of the visible part of the map at the current zoom level
            var my_markers_2 = new Array();
            while (my_markers.length > 0) {
               var current_marker = my_markers.pop();
@@ -120,6 +128,7 @@ header('Content-type: text/html; charset=utf-8');
             }
             my_markers = my_markers_2;
 
+            // Process XML from api.php
             var iNode = 0;
             for (iNode = 0; iNode < root.childNodes.length; iNode++) {
 
@@ -139,6 +148,8 @@ header('Content-type: text/html; charset=utf-8');
                   }
                 }
                 if (arr.length > 0) {
+                  // Build a new marker
+
                   var size = new OpenLayers.Size(21,20);
                   var offset = new OpenLayers.Pixel(0,0);
                   var icon = new OpenLayers.Icon(arr[4],size,offset);
@@ -146,8 +157,10 @@ header('Content-type: text/html; charset=utf-8');
                   var marker = new OpenLayers.Marker(lonLatMarker, icon);
 
                   if (marker_in_my_markers(marker) == 1) {
+                    // if we already have this marker on the map, don't try to re-add it
                     marker.destroy();
                   } else {
+                    // Add the marker to the map
                     var feature = new OpenLayers.Feature(markers, lonLatMarker);
                     feature.closeBox = true;
                     feature.popupClass = OpenLayers.Class(OpenLayers.Popup.AnchoredBubble, {minSize: new OpenLayers.Size(300, 180) } );
@@ -181,6 +194,7 @@ header('Content-type: text/html; charset=utf-8');
       }
     }
 
+    // When the map is moved, fetch some markers
     function moveend_listener(evt) {
       var zoom = map.getZoom();
       var tlLonLat = map.getLonLatFromPixel(new OpenLayers.Pixel(1,1)).
@@ -199,6 +213,7 @@ header('Content-type: text/html; charset=utf-8');
       makeRequest(url);
     }
 
+    // Initialize the map
     function init() {
 
       map = new OpenLayers.Map ("map", {
