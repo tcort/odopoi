@@ -1,5 +1,14 @@
 - AJAX Marker Management
- * Write a script to precompute which zoom level each POI should be visible at.
+ * Write a script to precompute which zoom level each POI should be 
+visible at.
+
+- AJAX API
+ * Design and implement a caching mechanism to avoid a DB query and XML 
+generation every time the map is displayed, moved, or zoomed.
+
+- Data Loaders
+ * Re-write the Ottawa Public Library loader in PHP.
 
 - Graphics Improvements
- * Document what needs to be done so that someone with mad skillz can design cool icons.
+ * Document what needs to be done so that someone with mad skillz can 
+design cool icons.
