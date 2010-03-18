@@ -116,7 +116,7 @@ header('Content-type: text/html; charset=utf-8');
           // Build a new marker
           var size = new OpenLayers.Size(32, 37);
           var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
-          var icon = new OpenLayers.Icon('./icon/' + $(this).find("sym").text() + '.png', size, offset);
+          var icon = new OpenLayers.Icon('./sym/' + $(this).find("sym").text() + '.png', size, offset);
           var lonLatMarker = new OpenLayers.LonLat(wpt.attr('lon'), wpt.attr('lat')).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
           var marker = new OpenLayers.Marker(lonLatMarker, icon);
 
