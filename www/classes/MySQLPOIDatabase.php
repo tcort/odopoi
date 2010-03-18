@@ -33,7 +33,7 @@ class MySQLPOIDatabase extends POIDatabase {
 	}
 
 	public function getWpts($min_lat, $max_lat, $min_lon, $max_lon, $zoom) {
-		$sql = "SELECT lat, lon, name, descr, sym FROM poi WHERE lat BETWEEN '" . mysql_real_escape_string($min_lat, $this->getConnection()) . "' AND '" . mysql_real_escape_string($max_lat, $this->getConnection()) . "' AND lon BETWEEN '" . mysql_real_escape_string($min_lon, $this->getConnection()) . "' AND '" . mysql_real_escape_string($max_lon, $this->getConnection()) . "' AND zoom <= '" . mysql_real_escape_string($zoom, $this->getConnection()) . "';";
+		$sql = "SELECT lat, lon, name, descr, sym FROM poi WHERE lat BETWEEN '" . mysql_real_escape_string($min_lat, $this->getConnection()) . "' AND '" . mysql_real_escape_string($max_lat, $this->getConnection()) . "' AND lon BETWEEN '" . mysql_real_escape_string($min_lon, $this->getConnection()) . "' AND '" . mysql_real_escape_string($max_lon, $this->getConnection()) . "' AND zoom <= '" . mysql_real_escape_string($zoom, $this->getConnection()) . " ORDER BY RAND() LIMIT 500';";
 		$result = @mysql_query($sql) or die(mysql_error());
 		$gpx = new gpx();
 
