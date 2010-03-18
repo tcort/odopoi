@@ -128,7 +128,7 @@ header('Content-type: text/html; charset=utf-8');
             var feature = new OpenLayers.Feature(markers, lonLatMarker);
             feature.closeBox = true;
             feature.popupClass = OpenLayers.Class(OpenLayers.Popup.AnchoredBubble, {minSize: new OpenLayers.Size(300, 180) } );
-            feature.data.popupContentHTML = '<b>' + $(this).find("title").text() + '</b><br/>' + $(this).find("desc").text();
+            feature.data.popupContentHTML = '<b>' + $(this).find("name").text() + '</b><br/>' + $(this).find("desc").text();
             feature.data.overflow = "hidden";
             marker.feature = feature;
 

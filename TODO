@@ -1,6 +1,3 @@
-- Cache System
- * restrict number of files in the 'cache' directory to prevent DoS
-
 - General
  * Create an admin section
  * Create an installer

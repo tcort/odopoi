@@ -23,18 +23,18 @@ require_once('Cache.php');
 class FileCache extends Cache {
 
 	var $cache_dir = 'cache';
-	var $max_files = 512;
+	var $max_files = 256;
 	var $max_age = 259200; // 3 days in seconds
 
 	protected function keyToFilename($key) {
-		preg_match("/^[\._a-zA-Z0-9-]+$/", $key) or die('Invalid cache key "' . $key . '"');
+		(strlen($key) > 10 && preg_match("/^[\._a-zA-Z0-9-]+$/", $key)) or die('Invalid cache key "' . $key . '"');
 		return $this->cache_dir . '/' . $key . '.txt';
 	}
 
 	public function get($key) {
 		$filename = $this->keyToFilename($key);
 		if (file_exists($filename)) {
-			if ((filectime($filename) + $max_age) < time()) {
+			if (time() - filemtime($filename) > $this->max_age) {
 				unlink($filename) or die('Cannot delete stale cache file');
 				return FALSE;
 			} else {
@@ -46,6 +46,26 @@ class FileCache extends Cache {
 	}
 
 	public function put($key, $value) {
+		$files = scandir($this->cache_dir);
+		if (count($files) > $this->max_files) {
+			// start by removing stale files
+			foreach ($files as $file) {
+				if ((strlen($file) > 10) && (time() - filemtime($this->cache_dir . '/' . $file) > $this->max_age)) {
+					unlink($this->cache_dir . '/' . $file) or die('Cannot delete stale cache file');
+				}
+			}
+
+			$files = scandir($this->cache_dir);
+			if (count($files) > $this->max_files) {
+				$delcnt = (int) ($this->max_files * 0.35);
+				for ($i = 0; $i < count($files) && $i < $delcnt; $i++) {
+					if (strlen($files[$i]) > 10) {
+						unlink($this->cache_dir . '/' . $files[$i]) or die('Cannot delete stale cache file');
+					}
+				}
+			}
+		}
+
 		@file_put_contents($this->keyToFilename($key), $value) or die('Cache write fail');
 	}
 }
