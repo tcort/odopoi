@@ -18,5 +18,8 @@ would store name, load data, source of data, and license information.
 - Translation
  * l10n, i18n, and then translate to French.
 
+- AJAX
+ * Validate the data returned by api.php.
+
 - Documentation
  * Write README and INSTALL
