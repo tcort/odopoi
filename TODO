@@ -1,14 +1,17 @@
 - AJAX API
  * Design and implement a caching mechanism to avoid a DB query and XML 
 generation every time the map is displayed, moved, or zoomed.
- * Use a standards based XML format (GPX) or define an appropriate 
-schema.
+ * Update the Javascript to parse GPX.
+
+- PHP
+ * Re-write in a more object oriented style.
 
 - Data Loaders
  * Re-write the Ottawa Public Library loader in PHP.
 
 - Database
- * optimize the data model and SQL queries.
+ * Add a table called 'dataset' and associate it with poi. The table 
+would hold name, load data, source of data, and license information.
 
 - Translation
  * l10n, i18n, and then translate to French.

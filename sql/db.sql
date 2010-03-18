@@ -18,20 +18,15 @@ SET NAMES 'utf8' COLLATE 'utf8_unicode_ci';
 SET CHARACTER SET 'utf8';
 SET collation_connection = 'utf8_general_ci';
 
-DROP TABLE IF EXISTS poi_category;
-CREATE TABLE poi_category (
-	id CHAR(3) COLLATE utf8_unicode_ci NOT NULL PRIMARY KEY,
-	icon VARCHAR(64) COLLATE utf8_unicode_ci
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 CHARACTER SET utf8 COLLATE utf8_general_ci;
-
 DROP TABLE IF EXISTS poi;
 CREATE TABLE poi (
-	poi_category_id CHAR(3) COLLATE utf8_unicode_ci NOT NULL,
-	lat DECIMAL(15,12),
-	lon DECIMAL(15,12),
-	zoom INTEGER NOT NULL DEFAULT '0',
-	title VARCHAR(64) COLLATE utf8_unicode_ci,
-	description TEXT COLLATE utf8_unicode_ci
+	id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	lat DECIMAL(15,12) NOT NULL,
+	lon DECIMAL(15,12) NOT NULL,
+	zoom TINYINT NOT NULL DEFAULT '0',
+	name VARCHAR(64) COLLATE utf8_unicode_ci,
+	descr TEXT COLLATE utf8_unicode_ci,
+	sym VARCHAR(64) COLLATE utf8_unicode_ci
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 CHARACTER SET utf8 COLLATE utf8_general_ci;
 
-CREATE INDEX coord on poi (lat,lon);
+CREATE INDEX wpt on poi (lat,lon,zoom);

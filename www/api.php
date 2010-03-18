@@ -1,5 +1,5 @@
 <?php
-# Open Data Ottawa Points of Interest 
+# OpenDataMap.ca - Open Data Ottawa Points of Interest 
 # Copyright (C) 2010 Thomas Cort <linuxgeek@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
@@ -20,23 +20,11 @@ mb_language('uni');
 mb_internal_encoding('UTF-8');
 
 require_once('config.php');
+require_once('classes/MySQLPOIDatabase.php');
 
-function getPOI() {
-	global $hostname, $database, $username, $password;
-
-	// Connect to the Database
-	@mysql_connect($hostname, $username, $password) or die("Unable to connect to database");
-	@mysql_select_db($database) or die("Unable to select database");
-
-	// UTF-8 enable the database connection
-	@mysql_set_charset('utf8');
-
-	@mysql_query("SET NAMES 'utf8' COLLATE 'utf8_unicode_ci'");
-	@mysql_query("SET CHARACTER SET 'utf8'");
-	@mysql_query("SET collation_connection = 'utf8_general_ci'");
-
-	header("Content-type: text/xml; charset=utf-8");
-	echo '<?xml version="1.0" encoding="utf-8"?>';
+if (strcmp($_REQUEST["action"], "getPOI") == 0) {
+	$db = new MySQLPOIDatabase($hostname, $database, $username, $password);
+	$db->connect();
 
 	// Input parameters
 	$tllon = $_REQUEST["tllon"];
@@ -46,51 +34,23 @@ function getPOI() {
 	$zoom  = $_REQUEST["zoom"];
 
 	// Validate the input parameters
-	if (is_numeric($tllon) && is_numeric($tllat) && is_numeric($brlon) && is_numeric($brlat) & is_numeric($zoom) && $zoom >= 0) {
+	if (is_numeric($tllon) && -180.0 <= $tllon && $tllon < 180.0 && is_numeric($tllat) && -90.0 <= $tllat && $tllat <= 90.0 && is_numeric($brlon) && -180.0 <= $brlon && $brlon < 180.0 && is_numeric($brlat) && -90.0 <= $brlat && $brlat <= 90.0 && is_numeric($zoom) && $zoom >= 0 && $zoom < 20) {
 		$lon_min = ($tllon < $brlon) ? $tllon : $brlon;
 		$lon_max = ($tllon > $brlon) ? $tllon : $brlon;
 		$lat_min = ($tllat < $brlat) ? $tllat : $brlat;
 		$lat_max = ($tllat > $brlat) ? $tllat : $brlat;
 
-		$sql = "SELECT lat, lon, title, description, icon FROM poi JOIN poi_category ON poi.poi_category_id = poi_category.id WHERE lat BETWEEN '" . $lat_min . "' AND '" . $lat_max . "' AND lon BETWEEN '" . $lon_min . "' AND '" . $lon_max . "' AND zoom <= '" . $zoom . "' ORDER BY RAND() LIMIT 500;";
+		$gpx = $db->getWpts($lat_min, $lat_max, $lon_min, $lon_max, $zoom);
+		$db->disconnect();
+
+		header("Content-type: text/xml; charset=utf-8");
+		print $gpx->toXml();
 	} else {
-		// The user gave us crappy input so we give him/her crappy output.
-		// TODO: throw some sort of error here and add javascript in index.php to catch the error
-		$sql = "SELECT lat, lon, title, description, icon FROM poi JOIN poi_category ON poi.poi_category_id = poi_category.id ORDER BY RAND() LIMIT 500;";
+		header("Content-type: text/plain; charset=utf-8");
+		print "Invalid Input";
 	}
-
-	$result = mysql_query($sql);
-
-	// TODO: define an XML schema for this data (or maybe use GPX?).
-?>
-<!DOCTYPE root [
-<!ELEMENT cell ( #PCDATA ) >
-<!ELEMENT data ( row+ ) >
-<!ELEMENT root ( data ) >
-<!ELEMENT row ( cell+ ) >
-]>
-<root>
-<data>
-<?php
-	while ($row = mysql_fetch_row($result)) {
-?>
-<row><cell><?php echo htmlspecialchars($row[0]); ?></cell><cell><?php echo htmlspecialchars($row[1]); ?></cell><cell><?php echo htmlspecialchars($row[2]); ?></cell><cell><?php echo htmlspecialchars($row[3]); ?></cell><cell><?php echo htmlspecialchars($row[4]); ?></cell></row>
-<?php
-	}
-
-?>
-</data>
-</root>
-<?php
-
-	@mysql_close();
-}
-
-
-if (strcmp($_REQUEST["action"], "getPOI") == 0) {
-	getPOI();
 } else {
-	header("Content-type: text/plain; charset=UTF-8");
+	header("Content-type: text/plain; charset=utf-8");
 	print "Unsupported Action";
 }
 

@@ -21,9 +21,6 @@ mb_internal_encoding('UTF-8');
 print "SET NAMES 'utf8' COLLATE 'utf8_unicode_ci';\n";
 print "SET CHARACTER SET 'utf8';\n";
 print "SET collation_connection = 'utf8_general_ci';\n";
-print "DELETE FROM poi_category WHERE id = 'BUS';\n";
-print "DELETE FROM poi WHERE poi_category_id = 'BUS';\n";
-print "INSERT INTO poi_category VALUES ('BUS', './icon/bus.png');\n";
 
 $poi_title = "Bus Stop";
 
@@ -55,7 +52,7 @@ if (($handle = fopen("stops.txt", "r")) !== FALSE) {
 			$stop_lat = array_search("stop_lat", $line);
 			$stop_lon = array_search("stop_lon", $line);
 		} else {
-			$sql = "INSERT INTO poi VALUES ('BUS','" . trim($line[$stop_lat]) . "','" . trim($line[$stop_lon]) . "','0','" . $poi_title . "','" . str_replace("'", "''", trim($line[$stop_name])) . "');\n";
+			$sql = "INSERT INTO poi (lat,lon,zoom,name,descr,sym) VALUES ('" . trim($line[$stop_lat]) . "','" . trim($line[$stop_lon]) . "','0','" . $poi_title . "','" . str_replace("'", "''", trim($line[$stop_name])) . "','bus');\n";
 			print $sql;
 		}
 	}
