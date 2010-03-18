@@ -1,6 +1,5 @@
 - Cache System
  * restrict number of files in the 'cache' directory to prevent DoS
- * files over a certain age should be regenerated
 
 - PHP
  * Create an admin section
@@ -10,6 +9,7 @@
 - Data Loaders
  * Re-write the Ottawa Public Library loader in PHP.
  * Incorporate the loader into the application in an admin section
+ * A load should clear the cache
 
 - Database
  * Add a table called 'dataset' and associate it with poi. The table 

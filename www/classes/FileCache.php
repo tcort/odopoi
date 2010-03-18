@@ -23,6 +23,8 @@ require_once('Cache.php');
 class FileCache extends Cache {
 
 	var $cache_dir = 'cache';
+	var $max_files = 512;
+	var $max_age = 259200; // 3 days in seconds
 
 	protected function keyToFilename($key) {
 		preg_match("/^[\._a-zA-Z0-9-]+$/", $key) or die('Invalid cache key "' . $key . '"');
@@ -30,7 +32,17 @@ class FileCache extends Cache {
 	}
 
 	public function get($key) {
-		return @file_get_contents($this->keyToFilename($key));
+		$filename = $this->keyToFilename($key);
+		if (file_exists($filename)) {
+			if ((filectime($filename) + $max_age) < time()) {
+				unlink($filename) or die('Cannot delete stale cache file');
+				return FALSE;
+			} else {
+				return @file_get_contents($filename);
+			}
+		} else {
+			return FALSE;
+		}
 	}
 
 	public function put($key, $value) {
