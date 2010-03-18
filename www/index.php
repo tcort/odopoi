@@ -1,5 +1,5 @@
 <?php
-# Open Data Ottawa Points of Interest
+# OpenDataMap.ca - Open Data Ottawa Points of Interest
 # Copyright (C) 2010 Thomas Cort <linuxgeek@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@ header('Content-type: text/html; charset=utf-8');
 
   <link rel="stylesheet" type="text/css" href="css/style.css" media="screen">
 
+  <script type="text/javascript" src="./jquery/jquery-1.4.2.min.js" charset="utf-8"></script>
   <script type="text/javascript" src="./openlayers/OpenLayers.js" charset="utf-8"></script>
   <script type="text/javascript" src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js" charset="utf-8"></script>
 
@@ -48,7 +49,7 @@ header('Content-type: text/html; charset=utf-8');
     OpenLayers.Lang.setCode("en");
 
     // AJAX request
-    function makeRequest(url) {
+    function requestNewMarkers(url) {
       var http_request = false;
 
       if (window.XMLHttpRequest) { // Mozilla, Safari, ...
@@ -73,7 +74,7 @@ header('Content-type: text/html; charset=utf-8');
         return false;
       }
 
-      http_request.onreadystatechange = function() { alertContents(http_request); };
+      http_request.onreadystatechange = function() { processNewMarkers(http_request); };
       http_request.open('GET', url, true);
       http_request.send(null);
     }
@@ -108,91 +109,62 @@ header('Content-type: text/html; charset=utf-8');
     }
 
     // Handler for the AJAX response
-    function alertContents(http_request) {
-      if (http_request.readyState == 4) {
-        if (http_request.status == 200) {
-          var xmldoc = http_request.responseXML;
-          var root = xmldoc.getElementsByTagName('root').item(0);
-
-          if (root != null) {
-           // Remove markers that aren't within the bounds of the visible part of the map at the current zoom level
-           // Keep markers that are within the bounds of the visible part of the map at the current zoom level
-           var my_markers_2 = new Array();
-           while (my_markers.length > 0) {
-              var current_marker = my_markers.pop();
-              if (last_zoom < map.getZoom() && marker_is_in_view(current_marker) == 1) {
-                my_markers_2.push(current_marker);
-              } else {
-                markers.removeMarker(current_marker);
-                current_marker.destroy();
-              }
-            }
-            my_markers = my_markers_2;
-            last_zoom = map.getZoom();
-
-            // Process XML from api.php
-            var iNode = 0;
-            for (iNode = 0; iNode < root.childNodes.length; iNode++) {
-
-              var node = root.childNodes.item(iNode);
-              for (i = node.childNodes.length-1; i >= 0; i--) {
-                var sibl = node.childNodes.item(i);
-                var len = parseInt(sibl.childNodes.length / 2);
-                var arr = new Array(len);
-                var cnt = 0;
-                for (x = 0; x < sibl.childNodes.length; x++) {
-                  var sibl2 = sibl.childNodes.item(x);
-                  var sibl3;
-                  if (sibl2.childNodes.length > 0) {
-                    sibl3 = sibl2.childNodes.item(0);
-                    arr[cnt] = sibl3.data;
-                    cnt++;
-                  }
-                }
-                if (arr.length > 0) {
-                  // Build a new marker
-
-                  var size = new OpenLayers.Size(32,37);
-                  var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-                  var icon = new OpenLayers.Icon(arr[4],size,offset);
-                  var lonLatMarker = new OpenLayers.LonLat(arr[1], arr[0]).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
-                  var marker = new OpenLayers.Marker(lonLatMarker, icon);
-
-                  if (marker_in_my_markers(marker) == 1) {
-                    // if we already have this marker on the map, don't try to re-add it
-                    marker.destroy();
-                  } else {
-                    // Add the marker to the map
-                    var feature = new OpenLayers.Feature(markers, lonLatMarker);
-                    feature.closeBox = true;
-                    feature.popupClass = OpenLayers.Class(OpenLayers.Popup.AnchoredBubble, {minSize: new OpenLayers.Size(300, 180) } );
-                    feature.data.popupContentHTML = '<b>' + arr[2] + '</b><br/>' + arr[3];
-                    feature.data.overflow = "hidden";
-                    marker.feature = feature;
-
-                    var markerClick = function(evt) {
-                      if (this.popup == null) {
-                        this.popup = this.createPopup(this.closeBox);
-                        map.addPopup(this.popup);
-                        this.popup.show();
-                      } else {
-                        this.popup.toggle();
-                      }
-                      OpenLayers.Event.stop(evt);
-                    };
-
-                    marker.events.register("mousedown", feature, markerClick);
-
-                    markers.addMarker(marker);
-                    my_markers.push(marker);
-                  }
-                }
-              }
-            }
+    function processNewMarkers(http_request) {
+      if (http_request.readyState == 4 && http_request.status == 200) {
+        // Remove markers that aren't within the bounds of the visible part of the map at the current zoom level
+        // Keep markers that are within the bounds of the visible part of the map at the current zoom level
+        var my_markers_2 = new Array();
+        while (my_markers.length > 0) {
+          var current_marker = my_markers.pop();
+          if (last_zoom < map.getZoom() && marker_is_in_view(current_marker) == 1) {
+            my_markers_2.push(current_marker);
+          } else {
+            markers.removeMarker(current_marker);
+            current_marker.destroy();
           }
-        } else {
-          alert('There was a problem with the request.');
         }
+        my_markers = my_markers_2;
+        last_zoom = map.getZoom();
+
+        $(http_request.responseXML).find('wpt').each(function() {
+          var wpt = $(this);
+
+          // Build a new marker
+          var size = new OpenLayers.Size(32, 37);
+          var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
+          var icon = new OpenLayers.Icon('./icon/bus.png', size, offset);
+          var lonLatMarker = new OpenLayers.LonLat(wpt.attr('lon'), wpt.attr('lat')).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+          var marker = new OpenLayers.Marker(lonLatMarker, icon);
+
+          if (marker_in_my_markers(marker) == 1) {
+            // if we already have this marker on the map, don't try to re-add it
+            marker.destroy();
+          } else {
+            // Add the marker to the map
+            var feature = new OpenLayers.Feature(markers, lonLatMarker);
+            feature.closeBox = true;
+            feature.popupClass = OpenLayers.Class(OpenLayers.Popup.AnchoredBubble, {minSize: new OpenLayers.Size(300, 180) } );
+            feature.data.popupContentHTML = '<b>Hello</b><br/>World';
+            feature.data.overflow = "hidden";
+            marker.feature = feature;
+
+            var markerClick = function(evt) {
+              if (this.popup == null) {
+                this.popup = this.createPopup(this.closeBox);
+                map.addPopup(this.popup);
+                this.popup.show();
+              } else {
+                this.popup.toggle();
+              }
+              OpenLayers.Event.stop(evt);
+            };
+
+            marker.events.register("mousedown", feature, markerClick);
+
+            markers.addMarker(marker);
+            my_markers.push(marker);
+          }
+        });
       }
     }
 
@@ -212,7 +184,7 @@ header('Content-type: text/html; charset=utf-8');
            + "&brlon=" + brLonLat.lon
            + "&brlat=" + brLonLat.lat;
 
-      makeRequest(url);
+      requestNewMarkers(url);
     }
 
     // Initialize the map

@@ -1,5 +1,5 @@
 <?php
-# Open Data Ottawa Points of Interest 
+# OpenDataMap.ca - Open Data Ottawa Points of Interest 
 # Copyright (C) 2010 Thomas Cort <linuxgeek@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify

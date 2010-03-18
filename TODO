@@ -1,7 +1,6 @@
 - AJAX API
  * Design and implement a caching mechanism to avoid a DB query and XML 
 generation every time the map is displayed, moved, or zoomed.
- * Update the Javascript to parse GPX.
 
 - PHP
  * Re-write in a more object oriented style.
