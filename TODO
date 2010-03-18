@@ -1,22 +1,23 @@
 - Cache System
  * restrict number of files in the 'cache' directory to prevent DoS
 
-- PHP
+- General
  * Create an admin section
- * Make the zoom level calculator part of addWpt()
  * Create an installer
 
 - Data Loaders
  * Re-write the Ottawa Public Library loader in PHP.
  * Incorporate the loader into the application in an admin section
+ * Make the zoom level calculator part of addWpt()
  * A load should clear the cache
+ * GTFS Loader - if agency is "OC Transpo" add link to stop info.
 
 - Database
  * Add a table called 'dataset' and associate it with poi. The table 
-would hold name, load data, source of data, and license information.
+would store name, load data, source of data, and license information.
 
 - Translation
  * l10n, i18n, and then translate to French.
 
 - Documentation
- * Write README, AUTHORS, and INSTALL
+ * Write README and INSTALL
