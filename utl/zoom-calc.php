@@ -23,7 +23,6 @@ require_once('../www/config.php');
 
 # X=>Y -- at zoom level X, the minimum distance in miles between markers should be Y to prevent icons from overlaping.
 $mindist = array(
-	5242.88,
 	2621.44,
 	1310.72,
 	655.36,
@@ -41,7 +40,8 @@ $mindist = array(
 	0.16,
 	0.08,
 	0.04,
-	0.02
+	0.02,
+	0.01
 );
 
 # return the distance between the 2 coordinates in miles
