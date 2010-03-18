@@ -48,21 +48,21 @@ class gpx {
 		$dom = new DOMDocument('1.0', 'utf-8');		
 
 		$root = $dom->createElementNS('http://www.topografix.com/GPX/1/1', 'gpx');
-		$root->setAttribute('version', htmlentities($this->version));
-		$root->setAttribute('creator', htmlentities($this->creator));
+		$root->setAttribute('version', htmlspecialchars($this->version));
+		$root->setAttribute('creator', htmlspecialchars($this->creator));
 
 		foreach ($this->wpts as $wpt) {
 			$wptElem = $dom->createElement('wpt');
-			$wptElem->setAttribute('lat', htmlentities(htmlentities($wpt->getLat())));
-			$wptElem->setAttribute('lon', htmlentities(htmlentities($wpt->getLon())));
+			$wptElem->setAttribute('lat', htmlspecialchars($wpt->getLat()));
+			$wptElem->setAttribute('lon', htmlspecialchars($wpt->getLon()));
 
-			$nameElem = $dom->createElement('name', htmlentities(htmlentities($wpt->getName())));
+			$nameElem = $dom->createElement('name', htmlspecialchars($wpt->getName()));
 			$wptElem->appendChild($nameElem);
 
-			$descElem = $dom->createElement('desc', htmlentities(htmlentities($wpt->getDesc())));
+			$descElem = $dom->createElement('desc', htmlspecialchars($wpt->getDesc()));
 			$wptElem->appendChild($descElem);
 
-			$symElem = $dom->createElement('sym', htmlentities(htmlentities($wpt->getSym())));
+			$symElem = $dom->createElement('sym', htmlspecialchars($wpt->getSym()));
 			$wptElem->appendChild($symElem);
 
 			$root->appendChild($wptElem);
