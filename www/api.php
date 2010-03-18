@@ -20,11 +20,10 @@ mb_language('uni');
 mb_internal_encoding('UTF-8');
 
 require_once('config.php');
+require_once('classes/FileCache.php');
 require_once('classes/MySQLPOIDatabase.php');
 
 if (strcmp($_REQUEST["action"], "getPOI") == 0) {
-	$db = new MySQLPOIDatabase($hostname, $database, $username, $password);
-	$db->connect();
 
 	// Input parameters
 	$tllon = $_REQUEST["tllon"];
@@ -35,12 +34,26 @@ if (strcmp($_REQUEST["action"], "getPOI") == 0) {
 
 	// Validate the input parameters
 	if (is_numeric($tllon) && -180.0 <= $tllon && $tllon < 180.0 && is_numeric($tllat) && -90.0 <= $tllat && $tllat <= 90.0 && is_numeric($brlon) && -180.0 <= $brlon && $brlon < 180.0 && is_numeric($brlat) && -90.0 <= $brlat && $brlat <= 90.0 && is_numeric($zoom) && $zoom >= 0 && $zoom < 20) {
+		$min_lat = ($tllat < $brlat) ? $tllat : $brlat;
+		$max_lat = ($tllat > $brlat) ? $tllat : $brlat;
+		$min_lon = ($tllon < $brlon) ? $tllon : $brlon;
+		$max_lon = ($tllon > $brlon) ? $tllon : $brlon;
 
-		$gpx = $db->getWpts(($tllat < $brlat) ? $tllat : $brlat, ($tllat > $brlat) ? $tllat : $brlat, ($tllon < $brlon) ? $tllon : $brlon, ($tllon > $brlon) ? $tllon : $brlon, $zoom);
-		$db->disconnect();
+		$key = "poi_" . $min_lat . "_" . $max_lat . "_" . $min_lon . "_" . $max_lon . "_" . $zoom;
+		$cache = new FileCache();
+		$xml = $cache->get($key);
+		if ($xml == FALSE) {
+			$db = new MySQLPOIDatabase($hostname, $database, $username, $password);
+			$db->connect();
+			$gpx = $db->getWpts($min_lat, $max_lat, $min_lon, $max_lon, $zoom);
+			$xml = $gpx->toXml();
+			$db->disconnect();
+
+			$cache->put($key,$xml);
+		}
 
 		header("Content-type: text/xml; charset=utf-8");
-		print $gpx->toXml();
+		print $xml;
 	} else {
 		header("Content-type: text/plain; charset=utf-8");
 		print "Invalid Input";

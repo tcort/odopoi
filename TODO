@@ -1,6 +1,6 @@
-- AJAX API
- * Design and implement a caching mechanism to avoid a DB query and XML 
-generation every time the map is displayed, moved, or zoomed.
+- Cache System
+ * restrict number of files in the 'cache' directory to prevent DoS
+ * files over a certain age should be regenerated
 
 - PHP
  * Create an admin section
