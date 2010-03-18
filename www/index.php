@@ -48,37 +48,6 @@ header('Content-type: text/html; charset=utf-8');
     // Set the language to English
     OpenLayers.Lang.setCode("en");
 
-    // AJAX request
-    function requestNewMarkers(url) {
-      var http_request = false;
-
-      if (window.XMLHttpRequest) { // Mozilla, Safari, ...
-        http_request = new XMLHttpRequest();
-        if (http_request.overrideMimeType) {
-          http_request.overrideMimeType('text/xml');
-        }
-      } else if (window.ActiveXObject) { // IE
-        try {
-          http_request = new ActiveXObject("Msxml2.XMLHTTP");
-        } catch (e) {
-          try {
-            // Last chance
-            http_request = new ActiveXObject("Microsoft.XMLHTTP");
-          } catch (e) {
-          }
-        }
-      }
-
-      if (!http_request) {
-        alert('Giving up :( Cannot create an XMLHTTP instance');
-        return false;
-      }
-
-      http_request.onreadystatechange = function() { processNewMarkers(http_request); };
-      http_request.open('GET', url, true);
-      http_request.send(null);
-    }
-
     // Determines if the marker is within the bounds of the visible part of the map at the current zoom level
     function marker_is_in_view(marker) {
       var tlLonLat = map.getLonLatFromPixel(new OpenLayers.Pixel(1,1)).
@@ -108,9 +77,24 @@ header('Content-type: text/html; charset=utf-8');
       return 0;
     }
 
-    // Handler for the AJAX response
-    function processNewMarkers(http_request) {
-      if (http_request.readyState == 4 && http_request.status == 200) {
+    // When the map is moved, fetch some markers
+    function moveend_listener(evt) {
+      var zoom = map.getZoom();
+      var tlLonLat = map.getLonLatFromPixel(new OpenLayers.Pixel(1,1)).
+            transform(map.getProjectionObject(),map.displayProjection);
+      var mapsize = map.getSize();
+      var brLonLat = map.getLonLatFromPixel(new OpenLayers.Pixel(mapsize.w - 1, mapsize.h - 1)).
+            transform(map.getProjectionObject(),map.displayProjection);
+
+      var url = "./api.php?action=getPOI"
+           + "&zoom=" + zoom
+           + "&tllon=" + tlLonLat.lon
+           + "&tllat=" + tlLonLat.lat
+           + "&brlon=" + brLonLat.lon
+           + "&brlat=" + brLonLat.lat;
+
+      // GET and process some markers
+      $.get(url, function(data) { 
         // Remove markers that aren't within the bounds of the visible part of the map at the current zoom level
         // Keep markers that are within the bounds of the visible part of the map at the current zoom level
         var my_markers_2 = new Array();
@@ -126,7 +110,7 @@ header('Content-type: text/html; charset=utf-8');
         my_markers = my_markers_2;
         last_zoom = map.getZoom();
 
-        $(http_request.responseXML).find('wpt').each(function() {
+        $(data).find('wpt').each(function() {
           var wpt = $(this);
 
           // Build a new marker
@@ -165,26 +149,7 @@ header('Content-type: text/html; charset=utf-8');
             my_markers.push(marker);
           }
         });
-      }
-    }
-
-    // When the map is moved, fetch some markers
-    function moveend_listener(evt) {
-      var zoom = map.getZoom();
-      var tlLonLat = map.getLonLatFromPixel(new OpenLayers.Pixel(1,1)).
-            transform(map.getProjectionObject(),map.displayProjection);
-      var mapsize = map.getSize();
-      var brLonLat = map.getLonLatFromPixel(new OpenLayers.Pixel(mapsize.w - 1, mapsize.h - 1)).
-            transform(map.getProjectionObject(),map.displayProjection);
-
-      var url = "./api.php?action=getPOI"
-           + "&zoom=" + zoom
-           + "&tllon=" + tlLonLat.lon
-           + "&tllat=" + tlLonLat.lat
-           + "&brlon=" + brLonLat.lon
-           + "&brlat=" + brLonLat.lat;
-
-      requestNewMarkers(url);
+      });
     }
 
     // Initialize the map

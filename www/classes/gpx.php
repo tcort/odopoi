@@ -53,16 +53,16 @@ class gpx {
 
 		foreach ($this->wpts as $wpt) {
 			$wptElem = $dom->createElement('wpt');
-			$wptElem->setAttribute('lat', htmlentities($wpt->getLat()));
-			$wptElem->setAttribute('lon', htmlentities($wpt->getLon()));
+			$wptElem->setAttribute('lat', htmlentities(htmlentities($wpt->getLat())));
+			$wptElem->setAttribute('lon', htmlentities(htmlentities($wpt->getLon())));
 
-			$nameElem = $dom->createElement('name', htmlentities($wpt->getName()));
+			$nameElem = $dom->createElement('name', htmlentities(htmlentities($wpt->getName())));
 			$wptElem->appendChild($nameElem);
 
-			$descElem = $dom->createElement('desc', htmlentities($wpt->getDesc()));
+			$descElem = $dom->createElement('desc', htmlentities(htmlentities($wpt->getDesc())));
 			$wptElem->appendChild($descElem);
 
-			$symElem = $dom->createElement('sym', htmlentities($wpt->getSym()));
+			$symElem = $dom->createElement('sym', htmlentities(htmlentities($wpt->getSym())));
 			$wptElem->appendChild($symElem);
 
 			$root->appendChild($wptElem);

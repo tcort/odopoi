@@ -35,12 +35,8 @@ if (strcmp($_REQUEST["action"], "getPOI") == 0) {
 
 	// Validate the input parameters
 	if (is_numeric($tllon) && -180.0 <= $tllon && $tllon < 180.0 && is_numeric($tllat) && -90.0 <= $tllat && $tllat <= 90.0 && is_numeric($brlon) && -180.0 <= $brlon && $brlon < 180.0 && is_numeric($brlat) && -90.0 <= $brlat && $brlat <= 90.0 && is_numeric($zoom) && $zoom >= 0 && $zoom < 20) {
-		$lon_min = ($tllon < $brlon) ? $tllon : $brlon;
-		$lon_max = ($tllon > $brlon) ? $tllon : $brlon;
-		$lat_min = ($tllat < $brlat) ? $tllat : $brlat;
-		$lat_max = ($tllat > $brlat) ? $tllat : $brlat;
 
-		$gpx = $db->getWpts($lat_min, $lat_max, $lon_min, $lon_max, $zoom);
+		$gpx = $db->getWpts(($tllat < $brlat) ? $tllat : $brlat, ($tllat > $brlat) ? $tllat : $brlat, ($tllon < $brlon) ? $tllon : $brlon, ($tllon > $brlon) ? $tllon : $brlon, $zoom);
 		$db->disconnect();
 
 		header("Content-type: text/xml; charset=utf-8");
