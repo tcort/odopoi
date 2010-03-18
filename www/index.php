@@ -116,7 +116,7 @@ header('Content-type: text/html; charset=utf-8');
           // Build a new marker
           var size = new OpenLayers.Size(32, 37);
           var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
-          var icon = new OpenLayers.Icon('./icon/bus.png', size, offset);
+          var icon = new OpenLayers.Icon('./icon/' + $(this).find("sym").text() + '.png', size, offset);
           var lonLatMarker = new OpenLayers.LonLat(wpt.attr('lon'), wpt.attr('lat')).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
           var marker = new OpenLayers.Marker(lonLatMarker, icon);
 
@@ -128,7 +128,7 @@ header('Content-type: text/html; charset=utf-8');
             var feature = new OpenLayers.Feature(markers, lonLatMarker);
             feature.closeBox = true;
             feature.popupClass = OpenLayers.Class(OpenLayers.Popup.AnchoredBubble, {minSize: new OpenLayers.Size(300, 180) } );
-            feature.data.popupContentHTML = '<b>Hello</b><br/>World';
+            feature.data.popupContentHTML = '<b>' + $(this).find("title").text() + '</b><br/>' + $(this).find("desc").text();
             feature.data.overflow = "hidden";
             marker.feature = feature;
 
