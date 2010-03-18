@@ -6,7 +6,6 @@
  * Create an installer
 
 - Data Loaders
- * Re-write the Ottawa Public Library loader in PHP.
  * Incorporate the loader into the application in an admin section
  * Make the zoom level calculator part of addWpt()
  * A load should clear the cache
