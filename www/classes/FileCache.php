@@ -34,8 +34,12 @@ class FileCache extends Cache {
 	public function get($key) {
 		$filename = $this->keyToFilename($key);
 		if (file_exists($filename)) {
-			if (time() - filemtime($filename) > $this->max_age) {
-				unlink($filename) or die('Cannot delete stale cache file');
+			$mtime = @filemtime($filename);
+			if ($mtime == FALSE) {
+				return FALSE;
+			}
+			if (time() - $mtime > $this->max_age) {
+				@unlink($filename);
 				return FALSE;
 			} else {
 				return @file_get_contents($filename);
@@ -50,8 +54,12 @@ class FileCache extends Cache {
 		if (count($files) > $this->max_files) {
 			// start by removing stale files
 			foreach ($files as $file) {
-				if ((strlen($file) > 10) && (time() - filemtime($this->cache_dir . '/' . $file) > $this->max_age)) {
-					unlink($this->cache_dir . '/' . $file) or die('Cannot delete stale cache file');
+				$mtime = @filemtime($this->cache_dir . '/' . $file);
+				if ($mtime == FALSE) {
+					break;
+				}
+				if ((strlen($file) > 10) && (time() - $mtime > $this->max_age)) {
+					@unlink($this->cache_dir . '/' . $file);
 				}
 			}
 
@@ -60,7 +68,7 @@ class FileCache extends Cache {
 				$delcnt = (int) ($this->max_files * 0.35);
 				for ($i = 0; $i < count($files) && $i < $delcnt; $i++) {
 					if (strlen($files[$i]) > 10) {
-						unlink($this->cache_dir . '/' . $files[$i]) or die('Cannot delete stale cache file');
+						@unlink($this->cache_dir . '/' . $files[$i]);
 					}
 				}
 			}
