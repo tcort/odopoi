@@ -23,7 +23,7 @@ require_once('Cache.php');
 class FileCache extends Cache {
 
 	var $cache_dir = 'cache';
-	var $max_files = 256;
+	var $max_files = 2048;
 	var $max_age = 259200; // 3 days in seconds
 
 	protected function keyToFilename($key) {
