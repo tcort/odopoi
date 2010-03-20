@@ -20,10 +20,14 @@ mb_language('uni');
 mb_internal_encoding('UTF-8');
 header('Content-type: text/html; charset=utf-8');
 
+require_once('classes/Version.php');
+
 ?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
   <title>OpenDataMap.ca - Open Data Ottawa Points of Interest</title>
+
+  <meta name="generator" content="<?php $version = new Version(); echo $version->program . " " . $version->version;?>">
 
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
