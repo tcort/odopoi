@@ -6,7 +6,6 @@
  * Incorporate the loader into the application in an admin section
  * Make the zoom level calculator part of addWpt()
  * A load should clear the cache
- * GTFS Loader - if agency is "OC Transpo" add link to stop info.
 
 - Data Extractor
  * Re-write the dump utility using the new classes
