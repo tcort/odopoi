@@ -21,7 +21,8 @@ mb_internal_encoding('UTF-8');
 
 require_once('config.php');
 require_once('classes/FileCache.php');
-require_once('classes/MySQLPOIDatabase.php');
+require_once('classes/MySQLDatabase.php');
+require_once('classes/POIManager.php');
 
 if (strcmp($_REQUEST["action"], "getPOI") == 0) {
 
@@ -43,9 +44,10 @@ if (strcmp($_REQUEST["action"], "getPOI") == 0) {
 		$cache = new FileCache();
 		$xml = $cache->get($key);
 		if ($xml == FALSE) {
-			$db = new MySQLPOIDatabase($hostname, $database, $username, $password);
+			$db = new MySQLDatabase($hostname, $database, $username, $password);
 			$db->connect();
-			$gpx = $db->getWpts($min_lat, $max_lat, $min_lon, $max_lon, $zoom);
+			$poi = new POIManager($db);
+			$gpx = $poi->getWpts($min_lat, $max_lat, $min_lon, $max_lon, $zoom);
 			$xml = $gpx->toXml();
 			$db->disconnect();
 

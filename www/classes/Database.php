@@ -18,6 +18,8 @@
 mb_language('uni');
 mb_internal_encoding('UTF-8');
 
+require_once('DatabaseResult.php');
+
 abstract class Database {
 	var $hostname;
 	var $database;
@@ -67,6 +69,9 @@ abstract class Database {
 	abstract public function isConnected();
 	abstract public function connect();
 	abstract public function disconnect();
+	abstract public function query($sql);
+	abstract public function exec($sql);
+	abstract public function escape($str);
 
 	function __destruct() {
 		if ($this->isConnected()) {

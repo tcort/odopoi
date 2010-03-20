@@ -18,10 +18,9 @@
 mb_language('uni');
 mb_internal_encoding('UTF-8');
 
-require_once('gpx.php');
-require_once('POIDatabase.php');
+require_once('Database.php');
 
-class MySQLPOIDatabase extends POIDatabase {
+class MySQLDatabase extends Database {
 	var $connection = 0;
 
 	protected function getConnection() {
@@ -32,26 +31,11 @@ class MySQLPOIDatabase extends POIDatabase {
 		$this->connection = $connection;
 	}
 
-	public function getWpts($min_lat, $max_lat, $min_lon, $max_lon, $zoom) {
-		$sql = "SELECT lat, lon, name, descr, sym FROM poi WHERE lat BETWEEN '" . mysql_real_escape_string($min_lat, $this->getConnection()) . "' AND '" . mysql_real_escape_string($max_lat, $this->getConnection()) . "' AND lon BETWEEN '" . mysql_real_escape_string($min_lon, $this->getConnection()) . "' AND '" . mysql_real_escape_string($max_lon, $this->getConnection()) . "' AND zoom <= '" . mysql_real_escape_string($zoom, $this->getConnection()) . " ORDER BY RAND() LIMIT 500';";
-		$result = @mysql_query($sql) or die(mysql_error());
-		$gpx = new gpx();
-
-		while ($row = mysql_fetch_row($result)) {
-			$wpt = new wpt($row[0],$row[1]);
-			$wpt->setName($row[2]);
-			$wpt->setDesc($row[3]);
-			$wpt->setSym($row[4]);
-
-			$gpx->addWpt($wpt);
+	public function connect() {
+		if ($this->isConnected()) {
+			return;
 		}
 
-		mysql_free_result($result);
-
-		return $gpx;
-	}
-
-	public function connect() {
 		$connection = @mysql_connect($this->getHostname(), $this->getUsername(), $this->getPassword()) or die(mysql_error());
 		$this->setConnection($connection);
 		@mysql_select_db($this->getDatabase(), $this->getConnection()) or die(mysql_error());
@@ -73,6 +57,33 @@ class MySQLPOIDatabase extends POIDatabase {
 			$this->setConnection(0);
 		}
 	}
+
+	public function getMaxRows($result) {
+		return mysql_num_rows($result);
+	}
+
+	public function fetchArray($result) {
+		return mysql_fetch_array($result);
+	}
+
+	public function query($sql) {
+		$result = mysql_query($sql, $this->connection) or die(mysql_error());
+		return new DatabaseResult($this, $result, $sql);
+	}
+
+	public function escape($str) {
+		return mysql_real_escape_string($str, $this->getConnection());
+	}
+
+	public function exec($sql) {
+		$result = mysql_query($sql, $this->connection);
+		if (mysql_affected_rows($this->connection) > 0) {
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+	}
+
 }
 
 ?>

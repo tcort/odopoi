@@ -18,11 +18,33 @@
 mb_language('uni');
 mb_internal_encoding('UTF-8');
 
-require_once('Database.php');
+require_once('gpx.php');
 
-abstract class POIDatabase extends Database {
+class POIManager {
+	var $db;
 
-	abstract public function getWpts($min_lat, $max_lat, $min_lon, $max_lon, $zoom);
+	public function POIManager($db) {
+		$this->db = $db;
+	}
+
+	public function getWpts($min_lat, $max_lat, $min_lon, $max_lon, $zoom) {
+		$sql = "SELECT lat, lon, name, descr, sym FROM poi WHERE lat BETWEEN '" . $this->db->escape($min_lat) . "' AND '" . $this->db->escape($max_lat) . "' AND lon BETWEEN '" . $this->db->escape($min_lon) . "' AND '" . $this->db->escape($max_lon) . "' AND zoom <= '" . $this->db->escape($zoom) . " ORDER BY RAND() LIMIT 500';";
+		$result = $this->db->query($sql);
+		$gpx = new gpx();
+
+		while ($result->hasNext()) {
+			$row = $result->next();
+			$wpt = new wpt($row[0],$row[1]);
+			$wpt->setName($row[2]);
+			$wpt->setDesc($row[3]);
+			$wpt->setSym($row[4]);
+
+			$gpx->addWpt($wpt);
+		}
+
+		return $gpx;
+	}
+
 }
 
 ?>
