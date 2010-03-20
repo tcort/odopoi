@@ -170,11 +170,14 @@ require_once('classes/Version.php');
         eventListeners: { "moveend": moveend_listener }
       } );
  
-      layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
+      var layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
       map.addLayer(layerMapnik);
 
       var layerTah = new OpenLayers.Layer.OSM.Osmarender("Tiles@Home");
       map.addLayer(layerTah);
+
+      var layerCycleMap = new OpenLayers.Layer.OSM.CycleMap("CycleMap");
+      map.addLayer(layerCycleMap);
 
       markers = new OpenLayers.Layer.Markers("Open Data Ottawa Points of Interest");
       map.addLayer(markers);
