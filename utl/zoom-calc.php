@@ -55,10 +55,11 @@ function can_place_at_zoom($lat, $lon, $zoom) {
 	$result = mysql_query("SELECT lat, lon FROM poi WHERE zoom <= '" . $zoom . "';");
 	while ($row = mysql_fetch_row($result)) {
 		if (dist($lat, $lon, $row[0], $row[1]) < $mindist[$zoom]) {
+			mysql_free_result($result);
 			return 0;
 		}
 	}
-
+	mysql_free_result($result);
 	return 1;
 }
 
@@ -88,6 +89,7 @@ for ($current_level = 0; $current_level < 18; $current_level++) {
 			mysql_query("UPDATE poi SET zoom = '" . $current_level . "' WHERE lat = " . $row[0] . " AND lon = " . $row[1] . ";");
 		}
 	}
+	mysql_free_result($result);
 
 	print "Completed Zoom Level: " . $current_level . "\n";
 }

@@ -46,6 +46,8 @@ class MySQLPOIDatabase extends POIDatabase {
 			$gpx->addWpt($wpt);
 		}
 
+		mysql_free_result($result);
+
 		return $gpx;
 	}
 
