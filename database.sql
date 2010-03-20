@@ -30,3 +30,21 @@ CREATE TABLE poi (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE INDEX wpt on poi (lat,lon,zoom);
+
+DROP TABLE IF EXISTS accesslevels;
+CREATE TABLE accesslevels (
+	levelid int(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	name varchar(64) COLLATE utf8_unicode_ci DEFAULT ''
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+INSERT INTO accesslevels (name) VALUES ('admin');
+
+DROP TABLE IF EXISTS users;
+CREATE TABLE users (
+	userid int(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	username varchar(32) NOT NULL DEFAULT '' COLLATE utf8_unicode_ci,
+	passwd varchar(40) NOT NULL DEFAULT '' COLLATE utf8_unicode_ci,
+	accesslevel int(10) UNSIGNED NOT NULL DEFAULT '0',
+	salt char(32) NOT NULL DEFAULT '' COLLATE utf8_unicode_ci,
+	UNIQUE KEY username (username)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 CHARACTER SET utf8 COLLATE utf8_general_ci;
