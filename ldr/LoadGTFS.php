@@ -22,7 +22,8 @@ print "SET NAMES 'utf8' COLLATE 'utf8_unicode_ci';\n";
 print "SET CHARACTER SET 'utf8';\n";
 print "SET collation_connection = 'utf8_general_ci';\n";
 
-$poi_title = "Bus Stop";
+$poi_title = "Transit Stop";
+$transit_co = "";
 
 if (($handle = fopen("agency.txt", "r")) !== FALSE) {
 	$first_line = 1;
@@ -34,6 +35,7 @@ if (($handle = fopen("agency.txt", "r")) !== FALSE) {
 			$agency_name = array_search("agency_name", $line);
 			$agency_url = array_search("agency_url", $line);
 		} else {
+			$transit_co = trim($line[$agency_name]);
 			$poi_title = '<a href="' . str_replace("'", "''", trim($line[$agency_url])) . '">' . str_replace("'", "''", trim($line[$agency_name])) . '</a> Stop';
 		}
 	}
@@ -48,11 +50,17 @@ if (($handle = fopen("stops.txt", "r")) !== FALSE) {
 	while (($line = fgetcsv($handle, 1024, ",")) !== FALSE) {
 		if ($first_line == 1) {
 			$first_line = 0;
+			$stop_id = array_search("stop_id", $line);
 			$stop_name = array_search("stop_name", $line);
 			$stop_lat = array_search("stop_lat", $line);
 			$stop_lon = array_search("stop_lon", $line);
 		} else {
-			$sql = "INSERT INTO poi (lat,lon,zoom,name,descr,sym) VALUES ('" . trim($line[$stop_lat]) . "','" . trim($line[$stop_lon]) . "','0','" . $poi_title . "','" . str_replace("'", "''", trim($line[$stop_name])) . "','bus');\n";
+			$stop_detail_link = "";
+			if ($transit_co == "OC Transpo") {
+				$stop_detail_link = '<p><a href="http://octranspo.net/stops/' . trim($line[$stop_id]) . '">View Schedule</a></p>';
+			}
+
+			$sql = "INSERT INTO poi (lat,lon,zoom,name,descr,sym) VALUES ('" . trim($line[$stop_lat]) . "','" . trim($line[$stop_lon]) . "','0','" . $poi_title . "','" . str_replace("'", "''", trim('<p>' . $line[$stop_name]) . '</p>' . $stop_detail_link) . "','bus');\n";
 			print $sql;
 		}
 	}
