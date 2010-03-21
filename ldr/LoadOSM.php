@@ -18,7 +18,7 @@
 mb_language('uni');
 mb_internal_encoding('UTF-8');
 
-ini_set('memory_limit', '256M');
+ini_set('memory_limit', '384M');
 
 print "SET NAMES 'utf8' COLLATE 'utf8_unicode_ci';\n";
 print "SET CHARACTER SET 'utf8';\n";
@@ -136,7 +136,7 @@ if (!($fp = fopen($file, "r"))) {
 	die("could not open XML input");
 }
 
-while ($data = fread($fp, 131070)) {
+while ($data = fread($fp, 134217728)) {
 	if (!xml_parse($xml_parser, $data, feof($fp))) {
 		die(sprintf("XML error: %s at line %d", xml_error_string(xml_get_error_code($xml_parser)), xml_get_current_line_number($xml_parser)));
 	}
