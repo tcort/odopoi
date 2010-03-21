@@ -52,7 +52,7 @@ function dist($lat_A, $lon_A, $lat_B, $lon_B) {
 function can_place_at_zoom($lat, $lon, $zoom) {
 	global $mindist;
 
-	$result = mysql_query("SELECT lat, lon FROM poi WHERE zoom <= '" . $zoom . "';");
+	$result = mysql_query("SELECT lat, lon FROM poi WHERE zoom <= '" . $zoom . "' ORDER BY RAND();");
 	while ($row = mysql_fetch_row($result)) {
 		if (dist($lat, $lon, $row[0], $row[1]) < $mindist[$zoom]) {
 			mysql_free_result($result);
@@ -83,7 +83,7 @@ mysql_query("UPDATE poi SET zoom = '0' WHERE zoom = '18' ORDER BY RAND() LIMIT 1
 for ($current_level = 0; $current_level < 18; $current_level++) {
 
 	// go through the lowest level to see if there are any candidates to bring up
-	$result = mysql_query("SELECT lat, lon FROM poi WHERE zoom = '18';");
+	$result = mysql_query("SELECT lat, lon FROM poi WHERE zoom = '18' ORDER BY RAND();");
 	while ($row = mysql_fetch_row($result)) {
 		if (can_place_at_zoom($row[0], $row[1], $current_level) == 1) {
 			mysql_query("UPDATE poi SET zoom = '" . $current_level . "' WHERE lat = " . $row[0] . " AND lon = " . $row[1] . ";");
