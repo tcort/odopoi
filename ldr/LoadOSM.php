@@ -60,6 +60,8 @@ function endElement($parser, $name) {
 				$desc = addslashes($lic);
 				if (isset($tags["url"])) {
 					$desc = '<p><a href="' . addslashes($tags["url"]) . '">Visit Homepage</a></p>' . addslashes($lic);
+				} elseif (isset($tags["website"])) {
+					$desc = '<p><a href="' . addslashes($tags["website"]) . '">Visit Homepage</a></p>' . addslashes($lic);
 				}
 
 				switch ($tags["amenity"]) {
@@ -74,6 +76,12 @@ function endElement($parser, $name) {
 					case "pub":
 					case "bar":
 						print "INSERT INTO poi (lat, lon, name, descr, sym) VALUES ('$lat','$lon','" . addslashes($tags["name"]) . "','$desc','cocktail');\n";
+						break;
+					case "theatre":
+						print "INSERT INTO poi (lat, lon, name, descr, sym) VALUES ('$lat','$lon','" . addslashes($tags["name"]) . "','$desc','theater');\n";
+						break;
+					case "fast_food":
+						print "INSERT INTO poi (lat, lon, name, descr, sym) VALUES ('$lat','$lon','" . addslashes($tags["name"]) . "','$desc','fastfood');\n";
 						break;
 				}
 			} elseif (isset($tags["shop"]) && isset($tags["name"])) {
@@ -98,6 +106,17 @@ function endElement($parser, $name) {
 						print "INSERT INTO poi (lat, lon, name, descr, sym) VALUES ('$lat','$lon','" . addslashes($tags["name"]) . "','$desc','hotel');\n";
 						break;
 				}
+			} elseif (isset($tags["historic"]) && isset($tags["name"])) {
+				$desc = addslashes($lic);
+				if (isset($tags["url"])) {
+					$desc = '<p><a href="' . addslashes($tags["url"]) . '">Visit Homepage</a></p>' . addslashes($lic);
+				}
+
+				switch ($tags["historic"]) {
+					case "monument":
+						print "INSERT INTO poi (lat, lon, name, descr, sym) VALUES ('$lat','$lon','" . addslashes($tags["name"]) . "','$desc','monument');\n";
+						break;
+				}
 			}
 		}
 
@@ -117,7 +136,7 @@ if (!($fp = fopen($file, "r"))) {
 	die("could not open XML input");
 }
 
-while ($data = fread($fp, 65535)) {
+while ($data = fread($fp, 131070)) {
 	if (!xml_parse($xml_parser, $data, feof($fp))) {
 		die(sprintf("XML error: %s at line %d", xml_error_string(xml_get_error_code($xml_parser)), xml_get_current_line_number($xml_parser)));
 	}
