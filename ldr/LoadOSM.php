@@ -67,7 +67,6 @@ function endElement($parser, $name) {
 				switch ($tags["amenity"]) {
 					case "hospital":
 					case "cinema":
-					case "cafe":
 					case "bank":
 					case "library":
 					case "restaurant":
@@ -82,6 +81,9 @@ function endElement($parser, $name) {
 						break;
 					case "fast_food":
 						print "INSERT INTO poi (lat, lon, name, descr, sym) VALUES ('$lat','$lon','" . addslashes($tags["name"]) . "','$desc','fastfood');\n";
+						break;
+					case "cafe":
+						print "INSERT INTO poi (lat, lon, name, descr, sym) VALUES ('$lat','$lon','" . addslashes($tags["name"]) . "','$desc','coffee');\n";
 						break;
 				}
 			} elseif (isset($tags["shop"]) && isset($tags["name"])) {
