@@ -72,6 +72,8 @@ abstract class Database {
 	abstract public function query($sql);
 	abstract public function exec($sql);
 	abstract public function escape($str);
+	abstract public function getMaxRows($dbresult);
+	abstract public function fetchArray($dbresult);
 
 	function __destruct() {
 		if ($this->isConnected()) {

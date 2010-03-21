@@ -29,8 +29,8 @@ class DatabaseResult {
 	function DatabaseResult($db, $result, $sql) {
 		$this->db = $db;
 		$this->sql = $sql;
-		$this->maxrows = $this->db->getMaxRows($result);
 		$this->result = $result;
+		$this->maxrows = $this->db->getMaxRows($this);
 		$this->arr = NULL;
 		$this->rownum = 0;
 	}
@@ -41,7 +41,7 @@ class DatabaseResult {
 
 	function next() {
 		if ($this->hasNext()) {
-			$this->arr = $this->db->fetchArray($this->result);
+			$this->arr = $this->db->fetchArray($this);
 			$this->rownum++;
 			return $this->arr;
 		} else {

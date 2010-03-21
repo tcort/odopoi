@@ -58,12 +58,12 @@ class MySQLDatabase extends Database {
 		}
 	}
 
-	public function getMaxRows($result) {
-		return mysql_num_rows($result);
+	public function getMaxRows($dbresult) {
+		return mysql_num_rows($dbresult->result);
 	}
 
-	public function fetchArray($result) {
-		return mysql_fetch_array($result);
+	public function fetchArray($dbresult) {
+		return mysql_fetch_array($dbresult->result);
 	}
 
 	public function query($sql) {
