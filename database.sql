@@ -48,3 +48,14 @@ CREATE TABLE users (
 	salt char(32) NOT NULL DEFAULT '' COLLATE utf8_unicode_ci,
 	UNIQUE KEY username (username)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+INSERT INTO users (username,passwd,accesslevel,salt) VALUES ('admin','709ea9ccee88bcdd5e67e8dfc6b469b71a01646c',1,'21232f297a57a5a743894a0e4a801fc3');
+
+DROP TABLE IF EXISTS sessions;
+CREATE TABLE sessions (
+	sessionid CHAR(80) NOT NULL PRIMARY KEY COLLATE utf8_unicode_ci,
+	starttime TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	userid int(10) UNSIGNED NOT NULL,
+	ip CHAR(15) NOT NULL DEFAULT '' COLLATE utf8_unicode_ci
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 CHARACTER SET utf8 COLLATE utf8_general_ci;
+
