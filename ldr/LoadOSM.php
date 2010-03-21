@@ -18,6 +18,8 @@
 mb_language('uni');
 mb_internal_encoding('UTF-8');
 
+ini_set('memory_limit', '256M');
+
 print "SET NAMES 'utf8' COLLATE 'utf8_unicode_ci';\n";
 print "SET CHARACTER SET 'utf8';\n";
 print "SET collation_connection = 'utf8_general_ci';\n";
@@ -25,9 +27,9 @@ print "SET collation_connection = 'utf8_general_ci';\n";
 #settings
 $file = 'planet-100317.osm';
 $lat_min = 45.00;
-$lat_max = 46.00;
-$lon_min = -76.00;
-$lon_max = -75.00;
+$lat_max = 47.00;
+$lon_min = -77.00;
+$lon_max = -74.00;
 $lic = '<p><small>This point of interest is copyright <a href="http://www.openstreetmap.org/">OpenStreetMap</a> and its contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.</small></p>';
 
 $parsing_node = FALSE;
@@ -61,18 +63,39 @@ function endElement($parser, $name) {
 				}
 
 				switch ($tags["amenity"]) {
-					case "cafe":
-						print "INSERT INTO poi (lat, lon, name, descr, sym) VALUES ('$lat','$lon','" . addslashes($tags["name"]) . "','$desc','coffee');\n";
-						break;
+					case "hospital":
 					case "cinema":
-						print "INSERT INTO poi (lat, lon, name, descr, sym) VALUES ('$lat','$lon','" . addslashes($tags["name"]) . "','$desc','cinema');\n";
+					case "cafe":
+					case "bank":
+					case "library":
+					case "restaurant":
+						print "INSERT INTO poi (lat, lon, name, descr, sym) VALUES ('$lat','$lon','" . addslashes($tags["name"]) . "','$desc','" . $tags["amenity"] . "');\n";
 						break;
 					case "pub":
 					case "bar":
 						print "INSERT INTO poi (lat, lon, name, descr, sym) VALUES ('$lat','$lon','" . addslashes($tags["name"]) . "','$desc','cocktail');\n";
 						break;
-					case "restaurant":
-						print "INSERT INTO poi (lat, lon, name, descr, sym) VALUES ('$lat','$lon','" . addslashes($tags["name"]) . "','$desc','restaurant');\n";
+				}
+			} elseif (isset($tags["shop"]) && isset($tags["name"])) {
+				$desc = addslashes($lic);
+				if (isset($tags["url"])) {
+					$desc = '<p><a href="' . addslashes($tags["url"]) . '">Visit Homepage</a></p>' . addslashes($lic);
+				}
+
+				switch ($tags["shop"]) {
+					case "supermarket":
+						print "INSERT INTO poi (lat, lon, name, descr, sym) VALUES ('$lat','$lon','" . addslashes($tags["name"]) . "','$desc','supermarket');\n";
+						break;
+				}
+			} elseif (isset($tags["tourism"]) && isset($tags["name"])) {
+				$desc = addslashes($lic);
+				if (isset($tags["url"])) {
+					$desc = '<p><a href="' . addslashes($tags["url"]) . '">Visit Homepage</a></p>' . addslashes($lic);
+				}
+
+				switch ($tags["tourism"]) {
+					case "hotel":
+						print "INSERT INTO poi (lat, lon, name, descr, sym) VALUES ('$lat','$lon','" . addslashes($tags["name"]) . "','$desc','hotel');\n";
 						break;
 				}
 			}
@@ -94,7 +117,7 @@ if (!($fp = fopen($file, "r"))) {
 	die("could not open XML input");
 }
 
-while ($data = fread($fp, 4096)) {
+while ($data = fread($fp, 65535)) {
 	if (!xml_parse($xml_parser, $data, feof($fp))) {
 		die(sprintf("XML error: %s at line %d", xml_error_string(xml_get_error_code($xml_parser)), xml_get_current_line_number($xml_parser)));
 	}
