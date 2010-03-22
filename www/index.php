@@ -195,9 +195,8 @@ require_once('classes/Version.php');
   <div id="sidebar">
     <div id="sidetxt">
       <div id="header"><h4>OpenDataMap.ca</h4></div>
-      <p><em>Disclaimer</em>: The points of interest you see on this page don't come with any warranty and may be totally inaccurate. This website is not affiliated with any government or transit agency.</p>
-      <p>Copyright &copy; 2010 <a href="http://www.tomcort.com/">Thomas Cort</a><br/><small>This application is <a href="http://www.gnu.org/philosophy/free-sw.html">Free Software</a>. Get the source code <a href="http://github.com/tcort/odopoi">here</a>.</small></p>
-      <p><small>Maps are licensed <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-By-SA 2.0</a> by <a href="http://www.openstreetmap.org/">OpenStreetMap</a>. Map display is licensed <a href="http://svn.openlayers.org/trunk/openlayers/license.txt">BSD-style</a> by <a href="http://openlayers.org/">OpenLayers</a>. Marker icons are licensed <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC-By-SA 3.0</a> by <a href="http://code.google.com/p/google-maps-icons/">Maps icons collection</a>.</small></p>
+      <p><small><em>Disclaimer</em>: The points of interest you see on this page don't come with any warranty and may be totally inaccurate. This website is not affiliated with any government or transit agency.</small></p>
+      <p><small>This <a href="http://github.com/tcort/odopoi">application</a> is <a href="http://www.gnu.org/philosophy/free-sw.html">Free Software</a>. Maps are licensed <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-By-SA 2.0</a> by <a href="http://www.openstreetmap.org/">OpenStreetMap</a>. Map display is licensed <a href="http://svn.openlayers.org/trunk/openlayers/license.txt">BSD-style</a> by <a href="http://openlayers.org/">OpenLayers</a>. Marker icons are licensed <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC-By-SA 3.0</a> by <a href="http://code.google.com/p/google-maps-icons/">Maps icons collection</a>.</small></p>
     </div>
   </div>
 </body>
