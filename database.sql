@@ -48,32 +48,3 @@ CREATE TABLE poi (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE INDEX wpt on poi (lat,lon,zoom);
-
-DROP TABLE IF EXISTS accesslevels;
-CREATE TABLE accesslevels (
-	levelid int(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	name varchar(64) COLLATE utf8_unicode_ci DEFAULT ''
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 CHARACTER SET utf8 COLLATE utf8_general_ci;
-
-INSERT INTO accesslevels (name) VALUES ('admin');
-
-DROP TABLE IF EXISTS users;
-CREATE TABLE users (
-	userid int(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	username varchar(32) NOT NULL DEFAULT '' COLLATE utf8_unicode_ci,
-	passwd varchar(40) NOT NULL DEFAULT '' COLLATE utf8_unicode_ci,
-	accesslevel int(10) UNSIGNED NOT NULL DEFAULT '0',
-	salt char(32) NOT NULL DEFAULT '' COLLATE utf8_unicode_ci,
-	UNIQUE KEY username (username)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 CHARACTER SET utf8 COLLATE utf8_general_ci;
-
-INSERT INTO users (username,passwd,accesslevel,salt) VALUES ('admin','709ea9ccee88bcdd5e67e8dfc6b469b71a01646c',1,'21232f297a57a5a743894a0e4a801fc3');
-
-DROP TABLE IF EXISTS sessions;
-CREATE TABLE sessions (
-	sessionid CHAR(80) NOT NULL PRIMARY KEY COLLATE utf8_unicode_ci,
-	starttime TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	userid int(10) UNSIGNED NOT NULL,
-	ip CHAR(15) NOT NULL DEFAULT '' COLLATE utf8_unicode_ci
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 CHARACTER SET utf8 COLLATE utf8_general_ci;
-
