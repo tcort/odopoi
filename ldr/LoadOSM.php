@@ -44,12 +44,16 @@ print "SET NAMES 'utf8' COLLATE 'utf8_unicode_ci';\n";
 print "SET CHARACTER SET 'utf8';\n";
 print "SET collation_connection = 'utf8_general_ci';\n";
 
-#settings
+print "DELETE FROM poi;\n";
+
+# settings
 $file = 'planet-100317.osm';
-$lat_min = 45.00;
-$lat_max = 47.00;
-$lon_min = -77.00;
-$lon_max = -74.00;
+
+# Cover all of Canada.
+$lat_min = 41.50;	// Note: I used the N, S, E, W extremes to simplify the extraction.
+$lat_max = 83.25;	// Since Canada is not a square, some points in other countries may be
+$lon_min = -47.50;	// extracted. Feel free to send a patch if you have a better "Is
+$lon_max = -141.25;	// this point in Canada?" algorithm.
 $lic = '<p><small>This point of interest is copyright <a href="http://www.openstreetmap.org/">OpenStreetMap</a> and its contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.</small></p>';
 
 $parsing_node = FALSE;
