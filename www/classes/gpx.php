@@ -71,6 +71,14 @@ class gpx {
 		$root->setAttribute('version', htmlspecialchars($this->version));
 		$root->setAttribute('creator', htmlspecialchars($this->creator));
 
+		$metaElem = $dom->createElement('metadata');
+		$copyrightElem = $dom->createElement('copyright');
+		$copyrightElem->setAttribute('author','OpenStreetMap and Contributors');
+		$licenseElem = $dom->createElement('license', htmlspecialchars('http://creativecommons.org/licenses/by-sa/2.0/'));
+		$copyrightElem->appendChild($licenseElem);
+		$metaElem->appendChild($copyrightElem);
+		$root->appendChild($metaElem);
+
 		foreach ($this->wpts as $wpt) {
 			$wptElem = $dom->createElement('wpt');
 			$wptElem->setAttribute('lat', htmlspecialchars($wpt->getLat()));
@@ -93,5 +101,8 @@ class gpx {
 		return $dom->saveXML();
 	}
 }
+
+$gpx = new gpx();
+echo $gpx->toXml();
 
 ?>

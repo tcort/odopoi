@@ -180,7 +180,7 @@ require_once('classes/Version.php');
     function init() {
 
       map = new OpenLayers.Map ("map", {
-        controls: [new OpenLayers.Control.Navigation(), new OpenLayers.Control.PanZoomBar()],
+        controls: [new OpenLayers.Control.Navigation(), new OpenLayers.Control.PanZoomBar(), new OpenLayers.Control.Attribution()],
         maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),
         maxResolution: 156543.0399,
         numZoomLevels: 19,
@@ -199,7 +199,7 @@ require_once('classes/Version.php');
       var layerCycleMap = new OpenLayers.Layer.OSM.CycleMap("CycleMap");
       map.addLayer(layerCycleMap);
 
-      markers = new OpenLayers.Layer.Markers("Open Data Ottawa Points of Interest");
+      markers = new OpenLayers.Layer.Markers("Points of Interest");
       map.addLayer(markers);
 
       map.addControl(new OpenLayers.Control.LayerSwitcher());
@@ -215,8 +215,12 @@ require_once('classes/Version.php');
   <div id="sidebar">
     <div id="sidetxt">
       <div id="header"><h4>OpenDataMap.ca</h4></div>
-      <p><small><em>Disclaimer</em>: The points of interest you see on this page don't come with any warranty and may be totally inaccurate. This website is not affiliated with any government or transit agency.</small></p>
-      <p><small>This <a href="http://github.com/tcort/odopoi">application</a> is <a href="http://www.gnu.org/philosophy/free-sw.html">Free Software</a>. Maps are licensed <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-By-SA 2.0</a> by <a href="http://www.openstreetmap.org/">OpenStreetMap</a>. Map display is licensed <a href="http://svn.openlayers.org/trunk/openlayers/license.txt">BSD-style</a> by <a href="http://openlayers.org/">OpenLayers</a>. Marker icons are licensed <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC-By-SA 3.0</a> by <a href="http://code.google.com/p/google-maps-icons/">Maps icons collection</a>.</small></p>
+      <p><big>Site Details</big></p>
+      <p><small><b>Software</b>: The software that generated this page and interacts with a <a href="http://mysql.org">MySQL</a> database is called <em><a href="http://github.com/tcort/odopoi">odopoi</a></em>. It is <a href="http://www.gnu.org/philosophy/free-sw.html">Free Software</a> written in <a href="http://php.net/">PHP</a>. <em>odopoi</em> uses <a href="http://jquery.org">jQuery</a> for <a href="http://en.wikipedia.org/wiki/Ajax_%28programming%29">AJAX</a> and <a href="http://openlayers.org/">OpenLayers</a> for managing the map.</small></p>
+      <p><small><b>Data</b>: The maps and points of interest are copyright <a href="http://www.openstreetmap.org/">OpenStreetMap</a> and its contributors. Both are licenced <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.</small></p>
+      <p><small><b>Icons</b>: The marker icons used are from the <a href="http://code.google.com/p/google-maps-icons/">Maps icons collection</a> which is licensed <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC-By-SA</a>.</small></p>
+      <p><big>Disclaimer</big></p>
+      <p><small>OPENDATAMAP.CA PROVIDES INFORMATION ON AN "AS-IS" BASIS. OPENDATAMAP.CA MAKES NO WARRANTIES REGARDING THE INFORMATION PROVIDED, AND DISCLAIMS LIABILITY FOR DAMAGES RESULTING FROM ITS USE.</small></p>
     </div>
   </div>
 </body>
