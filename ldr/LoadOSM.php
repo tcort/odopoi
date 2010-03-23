@@ -98,6 +98,18 @@ function endElement($parser, $name) {
 						print "INSERT INTO poi (lat, lon, name, descr, sym) VALUES ('$lat','$lon','" . addslashes($tags["name"]) . "','$desc','gazstation');\n";
 						break;
 				}
+			} elseif (isset($tags["amenity"])) {
+				$desc = addslashes($lic);
+				switch ($tags["amenity"]) {
+					case "toilets":
+						print "INSERT INTO poi (lat, lon, name, descr, sym) VALUES ('$lat','$lon','Public Washrooms','$desc','toilet');\n";
+						break;
+					case "fountain":
+						print "INSERT INTO poi (lat, lon, name, descr, sym) VALUES ('$lat','$lon','Fountain','$desc','fountain');\n";
+						break;
+
+				}
+
 			} elseif (isset($tags["shop"]) && isset($tags["name"])) {
 				$desc = addslashes($lic);
 				if (isset($tags["url"])) {
