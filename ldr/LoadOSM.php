@@ -64,12 +64,21 @@ function endElement($parser, $name) {
 					$desc = '<p><a href="' . addslashes($tags["website"]) . '">Visit Homepage</a></p>' . addslashes($lic);
 				}
 
+				if (isset($tags["cuisine"])) {
+					$desc = '<p><em>Cuisine:</em> ' . addslashes($tags["cuisine"]) . '</p>';
+				}
+
+				if (isset($tags["opening_hours"])) {
+					$desc = '<p><em>Hours:</em> ' . addslashes($tags["opening_hours"]) . '</p>';
+				}
+
 				switch ($tags["amenity"]) {
 					case "hospital":
 					case "cinema":
 					case "bank":
 					case "library":
 					case "restaurant":
+					case "convenience":
 						print "INSERT INTO poi (lat, lon, name, descr, sym) VALUES ('$lat','$lon','" . addslashes($tags["name"]) . "','$desc','" . $tags["amenity"] . "');\n";
 						break;
 					case "pub":
@@ -85,11 +94,20 @@ function endElement($parser, $name) {
 					case "cafe":
 						print "INSERT INTO poi (lat, lon, name, descr, sym) VALUES ('$lat','$lon','" . addslashes($tags["name"]) . "','$desc','coffee');\n";
 						break;
+					case "fuel":
+						print "INSERT INTO poi (lat, lon, name, descr, sym) VALUES ('$lat','$lon','" . addslashes($tags["name"]) . "','$desc','gazstation');\n";
+						break;
 				}
 			} elseif (isset($tags["shop"]) && isset($tags["name"])) {
 				$desc = addslashes($lic);
 				if (isset($tags["url"])) {
 					$desc = '<p><a href="' . addslashes($tags["url"]) . '">Visit Homepage</a></p>' . addslashes($lic);
+				} elseif (isset($tags["website"])) {
+					$desc = '<p><a href="' . addslashes($tags["website"]) . '">Visit Homepage</a></p>' . addslashes($lic);
+				}
+
+				if (isset($tags["opening_hours"])) {
+					$desc = '<p><em>Hours:</em> ' . addslashes($tags["opening_hours"]) . '</p>';
 				}
 
 				switch ($tags["shop"]) {
@@ -101,6 +119,8 @@ function endElement($parser, $name) {
 				$desc = addslashes($lic);
 				if (isset($tags["url"])) {
 					$desc = '<p><a href="' . addslashes($tags["url"]) . '">Visit Homepage</a></p>' . addslashes($lic);
+				} elseif (isset($tags["website"])) {
+					$desc = '<p><a href="' . addslashes($tags["website"]) . '">Visit Homepage</a></p>' . addslashes($lic);
 				}
 
 				switch ($tags["tourism"]) {
@@ -112,6 +132,8 @@ function endElement($parser, $name) {
 				$desc = addslashes($lic);
 				if (isset($tags["url"])) {
 					$desc = '<p><a href="' . addslashes($tags["url"]) . '">Visit Homepage</a></p>' . addslashes($lic);
+				} elseif (isset($tags["website"])) {
+					$desc = '<p><a href="' . addslashes($tags["website"]) . '">Visit Homepage</a></p>' . addslashes($lic);
 				}
 
 				switch ($tags["historic"]) {
