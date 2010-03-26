@@ -47,4 +47,6 @@ CREATE TABLE poi (
 	sym VARCHAR(64) COLLATE utf8_unicode_ci
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 CHARACTER SET utf8 COLLATE utf8_general_ci;
 
-CREATE INDEX wpt on poi (lat,lon,zoom);
+CREATE INDEX wptz on poi (lat,lon,zoom);
+CREATE INDEX wpt on poi (lat,lon);
+CREATE INDEX zm on poi (zoom);
