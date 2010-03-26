@@ -123,6 +123,7 @@ void endElement(void *userData, const char *ename)
 			double dlat = strtod(lat, NULL);
 			double dlon = strtod(lon, NULL);
 			if (LAT_MIN <= dlat && dlat <= LAT_MAX && LON_MIN <= dlon && dlon <= LON_MAX) {
+/* escape strings and insert into db */
 				fprintf(stdout, "INSERT INTO poi (lat, lon, name, descr, sym) VALUES (%s, %s, '%s', '', '%s');\n", lat, lon, name, amenity);
 				fflush(stdout);
 			}
@@ -158,6 +159,8 @@ int main(int argc, char *argv[], char *envp[])
 	len = 0;
 	done = 0;
 	depth = 0;
+
+/* TODO: error checking on these calls */
 	parser = XML_ParserCreate("UTF-8");
 	XML_SetUserData(parser, &depth);
 	XML_SetElementHandler(parser, startElement, endElement);
@@ -168,6 +171,7 @@ int main(int argc, char *argv[], char *envp[])
 	fprintf(stdout, "DELETE FROM poi;\n");
 	fflush(stdout);
 
+/* TODO: make filename a cmd line arg. if '-' is used read from stdin */
 	f = fopen("map.osm", "rb");
 	if (f == NULL) {
 		fprintf(stderr, "Could not open map.osm.bz2\n");
