@@ -35,7 +35,7 @@
  */
 
 /*
- * gcc posm_extractor.c -lexpat -Wall -Werror -ansi -g3
+ * gcc posm_extractor.c -lexpat -Wall -Werror -ansi -g3 -o posm_extractor
  */
 
 #define _BSD_SOURCE
@@ -50,12 +50,47 @@
 #define LON_MIN (-77.00)
 #define LON_MAX (-74.00)
 
+typedef struct tag {
+	char *key;
+	char *value;
+	struct tag *next;
+} tag;
 
 int parsing_node = 0;
 char *lat = NULL;
 char *lon = NULL;
 char *amenity = NULL;
 char *name = NULL;
+tag *tag_list = NULL;
+
+char *escapeQuotes(const char *unsafe)
+{
+	char *safe;
+	int ulen;
+	int len;
+	int i;
+	int j;
+
+	ulen = strlen(unsafe);
+	len = (ulen * 2) + 1;
+
+	safe = (char *) malloc(sizeof(char) * len);
+	if (!safe) {
+		fprintf(stderr, "malloc() failed\n");
+		exit(1);
+	}
+	memset(safe, '\0', sizeof(char) * len);
+
+	for (i = 0, j = 0; i < ulen && j < len; i++, j++) {
+		safe[j] = unsafe[i];
+		if (safe[j] == '\'') {
+			j++;
+			safe[j] = '\'';
+		}
+	}
+
+	return safe;
+}
 
 char *getAttribute(const char *name, const char **atts)
 {
@@ -101,12 +136,36 @@ char *getTagValue(const char *key, const char **atts)
 void startElement(void *userData, const char *ename, const char **atts)
 {
 	if (parsing_node && !strcmp(ename, "tag")) {
+		int matched = 0;
+
 		if (!amenity) {
 			amenity = getTagValue("amenity", atts);
+			if (amenity) {
+				matched = 1;
+			}
 		}
 
 		if (!name) {
 			name = getTagValue("name", atts);
+			if (name) {
+				matched = 1;
+			}
+		}
+
+		if (!matched) {
+			tag *t;
+
+			t = (tag *) malloc(sizeof(tag));
+			if (!t) {
+				fprintf(stderr, "malloc() failed\n");
+				exit(1);
+			}
+			memset(t, '\0', sizeof(tag));
+
+			t->key = getAttribute("k", atts);
+			t->value = getAttribute("v", atts);
+			t->next = tag_list;
+			tag_list = t;
 		}
 
 	} else if (!strcmp(ename, "node")) {
@@ -120,12 +179,63 @@ void endElement(void *userData, const char *ename)
 {
 	if (!strcmp(ename, "node")) {
 		if (amenity && name && lat && lon) {
+			char *a;
+			char *n;
+			char *la;
+			char *lo;
+
 			double dlat = strtod(lat, NULL);
 			double dlon = strtod(lon, NULL);
 			if (LAT_MIN <= dlat && dlat <= LAT_MAX && LON_MIN <= dlon && dlon <= LON_MAX) {
-/* escape strings and insert into db */
-				fprintf(stdout, "INSERT INTO poi (lat, lon, name, descr, sym) VALUES (%s, %s, '%s', '', '%s');\n", lat, lon, name, amenity);
+				if (tag_list) {
+					tag *t;
+					for (t = tag_list; t; t = t->next) {
+						char *k;
+						char *v;
+
+						k = escapeQuotes(t->key);
+						v = escapeQuotes(t->value);
+						fprintf(stdout, "<tr><td>%s</td><td>%s</td></tr>", k, v);
+						fflush(stdout);
+						if (k) {
+							free(k);
+							k = NULL;
+						}
+						if (v) {
+							free(v);
+							v = NULL;
+						}
+					}
+				}
+
+				a = escapeQuotes(amenity);
+				n = escapeQuotes(name);
+				la = escapeQuotes(lat);
+				lo = escapeQuotes(lon);
+
+				fprintf(stdout, "INSERT INTO poi (lat, lon, name, descr, sym) VALUES (%s, %s, '%s', '', '%s');\n", la, lo, n, a);
 				fflush(stdout);
+
+				if (a) {
+					free(a);
+					a = NULL;
+				}
+
+				if (n) {
+					free(n);
+					n = NULL;
+				}
+
+				if (la) {
+					free(la);
+					la = NULL;
+				}
+
+				if (lo) {
+					free(lo);
+					lo = NULL;
+				}
+
 			}
 		}
 
@@ -142,6 +252,29 @@ void endElement(void *userData, const char *ename)
 
 		free(name);
 		name = NULL;
+
+		if (tag_list) {
+			tag *cur;
+			tag *old;
+
+			cur = tag_list;
+
+			while (cur) {
+				if (cur->key) {
+					free(cur->key);
+					cur->key = NULL;
+				}
+				if (cur->value) {
+					free(cur->value);
+					cur->value = NULL;
+				}
+				old = cur;
+				cur = cur->next;
+				free(old);
+			}
+
+			tag_list = NULL;
+		}
 	}
 }
 
@@ -160,8 +293,16 @@ int main(int argc, char *argv[], char *envp[])
 	done = 0;
 	depth = 0;
 
-/* TODO: error checking on these calls */
+	if (argc != 2) {
+		fprintf(stderr, "To read from a file:\n\tposm_extractor [filename.osm]\nTo read from stdin:\n\tposm_extractor -\n");
+		return -1;
+	}
+
 	parser = XML_ParserCreate("UTF-8");
+	if (parser == NULL) {
+		fprintf(stderr, "Could not initialize parser.\n");
+	}
+
 	XML_SetUserData(parser, &depth);
 	XML_SetElementHandler(parser, startElement, endElement);
 
@@ -171,12 +312,15 @@ int main(int argc, char *argv[], char *envp[])
 	fprintf(stdout, "DELETE FROM poi;\n");
 	fflush(stdout);
 
-/* TODO: make filename a cmd line arg. if '-' is used read from stdin */
-	f = fopen("map.osm", "rb");
-	if (f == NULL) {
-		fprintf(stderr, "Could not open map.osm.bz2\n");
-		XML_ParserFree(parser);
-		return 1;
+	if (strlen(argv[1]) == 1 && argv[1][0] == '-') {
+		f = stdin;
+	} else {
+		f = fopen(argv[1], "rb");
+		if (f == NULL) {
+			fprintf(stderr, "Could not open map.osm.bz2\n");
+			XML_ParserFree(parser);
+			return 1;
+		}
 	}
 
 	do {
@@ -192,7 +336,9 @@ int main(int argc, char *argv[], char *envp[])
 
 	} while (!done);
 
-	fclose(f);
+	if (f != stdin) {
+		fclose(f);
+	}
 
 	XML_ParserFree(parser);
 
