@@ -37,5 +37,5 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6 FATAL_ERROR)
 PROJECT(posm_extractor C)
 
 ADD_EXECUTABLE(posm_extractor posm_extractor.c)
-TARGET_LINK_LIBRARIES(posm_extractor bz2 expat)
+TARGET_LINK_LIBRARIES(posm_extractor expat)
 INSTALL(PROGRAMS posm_extractor DESTINATION bin)

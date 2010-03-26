@@ -35,96 +35,159 @@
  */
 
 /*
- * gcc posm_extractor.c -lbz2 -lexpat -Wall -Werror -ansi
+ * gcc posm_extractor.c -lexpat -Wall -Werror -ansi -g3
  */
+
+#define _BSD_SOURCE
 
 #include <stdio.h>
 #include <string.h>
-#include <bzlib.h>
 #include <expat.h>
 
-#define BUFSIZE (8192)
+#define BUFSIZE (4194304)
+#define LAT_MIN ( 45.00)
+#define LAT_MAX ( 47.00)
+#define LON_MIN (-77.00)
+#define LON_MAX (-74.00)
 
-void startElement(void *userData, const char *name, const char **atts)
+
+int parsing_node = 0;
+char *lat = NULL;
+char *lon = NULL;
+char *amenity = NULL;
+char *name = NULL;
+
+char *getAttribute(const char *name, const char **atts)
 {
 	int i;
+	char *attribute;
 
-	printf("Start %s\n", name);
-	for (i = 0; atts[i]; i++) {
-		printf("\t%s\n", atts[i]);
+	attribute = NULL;
+
+	for (i = 0; atts[i]; i = i + 2) {
+		if (!strcmp(atts[i], name)) {
+			attribute = strdup(atts[i + 1]);
+			break;
+		}
+	}
+
+	return attribute;
+}
+
+char *getTagValue(const char *key, const char **atts)
+{
+	int i;
+	int j;
+	char *value;
+
+	value = NULL;
+
+	/* locate key */
+	for (i = 0; atts[i]; i = i + 2) {
+		if (!strcmp(atts[i], "k") && !strcmp(atts[i + 1], key)) {
+			for (j = 0; atts[j]; j = j + 2) {
+				if (!strcmp(atts[j], "v")) {
+					value = strdup(atts[j + 1]);
+					break;
+				}
+			}
+			break;
+		}
+	}
+
+	return value;
+}
+
+void startElement(void *userData, const char *ename, const char **atts)
+{
+	if (parsing_node && !strcmp(ename, "tag")) {
+		if (!amenity) {
+			amenity = getTagValue("amenity", atts);
+		}
+
+		if (!name) {
+			name = getTagValue("name", atts);
+		}
+
+	} else if (!strcmp(ename, "node")) {
+		parsing_node = 1;
+		lat = getAttribute("lat", atts);
+		lon = getAttribute("lon", atts);
 	}
 }
 
-void endElement(void *userData, const char *name)
+void endElement(void *userData, const char *ename)
 {
-	printf("End %s\n", name);
+	if (!strcmp(ename, "node")) {
+		if (amenity && name && lat && lon) {
+			double dlat = strtod(lat, NULL);
+			double dlon = strtod(lon, NULL);
+			if (LAT_MIN <= dlat && dlat <= LAT_MAX && LON_MIN <= dlon && dlon <= LON_MAX) {
+				fprintf(stdout, "INSERT INTO poi (lat, lon, name, descr, sym) VALUES (%s, %s, '%s', '', '%s');\n", lat, lon, name, amenity);
+				fflush(stdout);
+			}
+		}
+
+		parsing_node = 0;
+
+		free(lat);
+		lat = NULL;
+
+		free(lon);
+		lon = NULL;
+
+		free(amenity);
+		amenity = NULL;
+
+		free(name);
+		name = NULL;
+	}
 }
 
 int main(int argc, char *argv[], char *envp[])
 {
 
-	BZFILE *b;
 	FILE *f;
 	char buf[BUFSIZE];
-	int bzerror;
-	int verbosity;
-	int small;
 	int len;
 	int done;
 	int depth;
 	XML_Parser parser;
 
-	b = NULL;
 	f = NULL;
-	bzerror = BZ_OK;
-	verbosity = 0;
-	small = 0;
 	len = 0;
 	done = 0;
 	depth = 0;
-	parser = XML_ParserCreate(NULL);
-/* TODO: error checks */
+	parser = XML_ParserCreate("UTF-8");
 	XML_SetUserData(parser, &depth);
-/* TODO: error checks */
 	XML_SetElementHandler(parser, startElement, endElement);
-/* TODO: error checks */
 
-	f = fopen("map.osm.bz2", "rb");
+	fprintf(stdout, "SET NAMES 'utf8' COLLATE 'utf8_unicode_ci';\n");
+	fprintf(stdout, "SET CHARACTER SET 'utf8';\n");
+	fprintf(stdout, "SET collation_connection = 'utf8_general_ci';\n");
+	fprintf(stdout, "DELETE FROM poi;\n");
+	fflush(stdout);
+
+	f = fopen("map.osm", "rb");
 	if (f == NULL) {
 		fprintf(stderr, "Could not open map.osm.bz2\n");
-		return 1;
-	}
-
-	b = BZ2_bzReadOpen(&bzerror, f, verbosity, small, NULL, 0);
-	if (bzerror != BZ_OK) {
-		BZ2_bzReadClose(&bzerror, b);
-		fclose(f);
-		fprintf(stderr, "Could not open bzip2 library for map.osm.bz2\n");
+		XML_ParserFree(parser);
 		return 1;
 	}
 
 	do {
-		memset(buf, '\0', BUFSIZE);
-		len = BZ2_bzRead(&bzerror, b, buf, BUFSIZE);
-		if (bzerror != BZ_OK && bzerror != BZ_STREAM_END) {
-			BZ2_bzReadClose(&bzerror, b);
-			fclose(f);
-			fprintf(stderr, "Read Error\n");
-			return 1;
-		}
-
-		done = (bzerror == BZ_STREAM_END);
+		len = fread(buf, sizeof(char), BUFSIZE, f);
+		done = feof(f);
 
 		if (!XML_Parse(parser, buf, len, done)) {
-			BZ2_bzReadClose(&bzerror, b);
 			fclose(f);
-			fprintf(stderr, "%s at line %d\n", XML_ErrorString(XML_GetErrorCode(parser)), (int) XML_GetCurrentLineNumber(parser));
+			fprintf(stderr, "Error (%d): %s at line %d\n", XML_GetErrorCode(parser), XML_ErrorString(XML_GetErrorCode(parser)), (int) XML_GetCurrentLineNumber(parser));
+			XML_ParserFree(parser);
 			return 1;
 		}
 
 	} while (!done);
 
-	BZ2_bzReadClose(&bzerror, b);
 	fclose(f);
 
 	XML_ParserFree(parser);
