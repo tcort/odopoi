@@ -271,6 +271,9 @@ void endElement(void *userData, const char *ename)
 				n = escapeQuotes(name);
 				la = escapeQuotes(lat);
 				lo = escapeQuotes(lon);
+				tmp = escapeQuotes(d);
+				free(d);
+				d = tmp;
 
 				fprintf(stdout, "INSERT INTO poi (lat, lon, name, descr, sym) VALUES (%s, %s, '%s', '%s', '%s');\n", la, lo, n, d, a);
 				fflush(stdout);
