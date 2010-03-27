@@ -50,6 +50,8 @@
 #define LON_MIN (-77.00)
 #define LON_MAX (-74.00)
 
+/* for all of Canada: lat 41.50 to 83.25 | lon -141.25 to -47.50 */
+
 typedef struct tag {
 	char *key;
 	char *value;
