@@ -72,15 +72,21 @@ function dist($lat_A, $lon_A, $lat_B, $lon_B) {
 function can_place_at_zoom($lat, $lon, $zoom) {
 	global $mindist;
 
-	$result = mysql_query("SELECT lat, lon FROM poi WHERE zoom <= '" . $zoom . "' ORDER BY RAND();");
-	while ($row = mysql_fetch_row($result)) {
-		if (dist($lat, $lon, $row[0], $row[1]) < $mindist[$zoom]) {
-			mysql_free_result($result);
-			return 0;
-		}
-	}
+	$result = mysql_query("SELECT dist_calc(" . $lat . ",lat," . $lon . ",lon) AS dist FROM poi WHERE zoom <= '" . $zoom . "' HAVING dist < " . $mindist[$zoom] . ";");
+
+	$rowcnt = mysql_num_rows($result);
 	mysql_free_result($result);
-	return 1;
+	return ($rowcnt == 0);
+
+//	$result = mysql_query("SELECT lat, lon FROM poi WHERE zoom <= '" . $zoom . "' ORDER BY RAND();");
+//	while ($row = mysql_fetch_row($result)) {
+//		if (dist($lat, $lon, $row[0], $row[1]) < $mindist[$zoom]) {
+//			mysql_free_result($result);
+//			return 0;
+//		}
+//	}
+//	mysql_free_result($result);
+//	return 1;
 }
 
 // Connect to the Database
