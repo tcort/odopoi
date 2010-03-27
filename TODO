@@ -1,5 +1,11 @@
+- Data Loader
+ * Handle POI that are defined as ways like a building outline tagged as a museum.
+
 - Data Extractor
  * Re-write the dump utility using the new classes
+
+- Zoom Calculator
+ * Re-write this so that it can scale to all points in Canada (the world?)
 
 - Translation
  * l10n, i18n, and then translate to French.
