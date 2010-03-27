@@ -81,3 +81,23 @@ body {
 #sidetxt p {
 	padding: 10px;
 }
+
+.poi {
+	width: 100%;
+}
+
+.k {
+	padding: 5px;
+	text-align: left;
+	font-size: small;
+	color: #f7f7f7;
+	background: #6e6e6e;
+}
+
+.v {
+	padding: 5px;
+	text-align: right;
+	font-size: small;
+	color: #000000;
+	background: #e6e6e6;
+}
