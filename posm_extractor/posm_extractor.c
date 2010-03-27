@@ -227,7 +227,7 @@ void endElement(void *userData, const char *ename)
 						free(d);
 					}
 
-					d = strdup("<table>");
+					d = strdup("<table class=\"poi\">");
 
 					for (t = tag_list; t; t = t->next) {
 						char *r;
