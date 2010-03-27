@@ -135,7 +135,8 @@ char *getTagValue(const char *key, const char **atts)
 	return value;
 }
 
-char *join(char *a, char *b) {
+char *join(char *a, char *b)
+{
 	char *result;
 	int lena;
 	int lenb;
