@@ -133,6 +133,35 @@ char *getTagValue(const char *key, const char **atts)
 	return value;
 }
 
+char *join(char *a, char *b) {
+	char *result;
+	int lena;
+	int lenb;
+
+	lena = 0;
+	lenb = 0;
+
+	if (a) {
+		lena = strlen(a);
+	}
+
+	if (b) {
+		lenb = strlen(b);
+	}
+
+	result = (char *) malloc((sizeof(char) * (lena + lenb)) + 1);
+	if (!result) {
+		fprintf(stderr, "malloc() failed\n");
+		exit(1);
+	}
+	memset(result, '\0', (sizeof(char) * (lena + lenb)) + 1);
+
+	strcpy(result, a);
+	strcat(result, b);
+
+	return result;
+}
+
 void startElement(void *userData, const char *ename, const char **atts)
 {
 	if (parsing_node && !strcmp(ename, "tag")) {
@@ -179,24 +208,50 @@ void endElement(void *userData, const char *ename)
 {
 	if (!strcmp(ename, "node")) {
 		if (amenity && name && lat && lon) {
+			char *tmp;
 			char *a;
 			char *n;
 			char *la;
 			char *lo;
+			char *d;
 
 			double dlat = strtod(lat, NULL);
 			double dlon = strtod(lon, NULL);
 			if (LAT_MIN <= dlat && dlat <= LAT_MAX && LON_MIN <= dlon && dlon <= LON_MAX) {
+				d = strdup("");
+
 				if (tag_list) {
 					tag *t;
+
+					if (d) {
+						free(d);
+					}
+
+					d = strdup("<table>");
+
 					for (t = tag_list; t; t = t->next) {
+						char *r;
 						char *k;
 						char *v;
 
 						k = escapeQuotes(t->key);
 						v = escapeQuotes(t->value);
-						fprintf(stdout, "<tr><td>%s</td><td>%s</td></tr>", k, v);
-						fflush(stdout);
+
+						r = join("<tr><td class=\"k\">", k);
+						tmp = r;
+						r = join(r, "</td><td class=\"v\">");
+						free(tmp);
+						tmp = r;
+						r = join(r, v);
+						free(tmp);
+						tmp = r;
+						r = join(r, "</td></tr>");
+						free(tmp);
+						tmp = d;
+						d = join(d, r);
+						free(tmp);
+						free(r);
+
 						if (k) {
 							free(k);
 							k = NULL;
@@ -206,6 +261,10 @@ void endElement(void *userData, const char *ename)
 							v = NULL;
 						}
 					}
+
+					tmp = d;
+					d = join(d, "</table>");
+					free(tmp);
 				}
 
 				a = escapeQuotes(amenity);
@@ -213,7 +272,7 @@ void endElement(void *userData, const char *ename)
 				la = escapeQuotes(lat);
 				lo = escapeQuotes(lon);
 
-				fprintf(stdout, "INSERT INTO poi (lat, lon, name, descr, sym) VALUES (%s, %s, '%s', '', '%s');\n", la, lo, n, a);
+				fprintf(stdout, "INSERT INTO poi (lat, lon, name, descr, sym) VALUES (%s, %s, '%s', '%s', '%s');\n", la, lo, n, d, a);
 				fflush(stdout);
 
 				if (a) {
@@ -234,6 +293,11 @@ void endElement(void *userData, const char *ename)
 				if (lo) {
 					free(lo);
 					lo = NULL;
+				}
+
+				if (d) {
+					free(d);
+					d = NULL;
 				}
 
 			}
@@ -317,7 +381,7 @@ int main(int argc, char *argv[], char *envp[])
 	} else {
 		f = fopen(argv[1], "rb");
 		if (f == NULL) {
-			fprintf(stderr, "Could not open map.osm.bz2\n");
+			fprintf(stderr, "Could not open '%s'\n", argv[1]);
 			XML_ParserFree(parser);
 			return 1;
 		}
