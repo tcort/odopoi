@@ -42,7 +42,7 @@ CREATE TABLE poi (
 	lat DECIMAL(15,12) NOT NULL,
 	lon DECIMAL(15,12) NOT NULL,
 	zoom TINYINT NOT NULL DEFAULT '0',
-	name VARCHAR(64) COLLATE utf8_unicode_ci,
+	name VARCHAR(128) COLLATE utf8_unicode_ci,
 	descr TEXT COLLATE utf8_unicode_ci,
 	sym VARCHAR(64) COLLATE utf8_unicode_ci
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 CHARACTER SET utf8 COLLATE utf8_general_ci;
