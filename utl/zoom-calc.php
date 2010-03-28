@@ -64,29 +64,61 @@ $mindist = array(
 	0.01
 );
 
-# return the distance between the 2 coordinates in miles
-function dist($lat_A, $lon_A, $lat_B, $lon_B) {
-	return (rad2deg(acos(sin(deg2rad($lat_A)) * sin(deg2rad($lat_B)) + cos(deg2rad($lat_A)) * cos(deg2rad($lat_B)) * cos(deg2rad($lon_A - $lon_B))))) * 69.09;
-}
+# mindist in degrees to avoid overlap
+$dlat = array(
+	38.0,
+	19.0,
+	9.49,
+	4.75,
+	2.38,
+	1.201,
+	0.6,
+	0.3,
+	0.15,
+	0.075,
+	0.038,
+	0.019,
+	0.0093,
+	0.0047,
+	0.0024,
+	0.0012,
+	0.0006,
+	0.0003,
+	0.0002
+);
+
+# mindist in degrees to avoid overlap
+$dlon = array(
+	54.8,
+	26.96,
+	13.45,
+	6.73,
+	3.36,
+	1.68,
+	0.84,
+	0.42,
+	0.21,
+	0.105,
+	0.053,
+	0.027,
+	0.014,
+	0.0066,
+	0.0033,
+	0.0017,
+	0.0009,
+	0.0005,
+	0.0003
+);
 
 function can_place_at_zoom($lat, $lon, $zoom) {
 	global $mindist;
+	global $dlat;
+	global $dlon;
 
-	$result = mysql_query("SELECT dist_calc(" . $lat . ",lat," . $lon . ",lon) AS dist FROM poi WHERE zoom <= '" . $zoom . "' HAVING dist < " . $mindist[$zoom] . ";");
-
+	$result = mysql_query("SELECT dist_calc(" . $lat . ",lat," . $lon . ",lon) AS dist FROM poi WHERE zoom <= '" . $zoom . "' AND (lat BETWEEN " . ($lat - $dlat[$zoom]) . " AND " . ($lat + $dlat[$zoom]) . ") AND (lon BETWEEN " . ($lon - $dlon[$zoom]) . " AND " . ($lon + $dlon[$zoom]) . ") HAVING dist < " . $mindist[$zoom] . ";");
 	$rowcnt = mysql_num_rows($result);
 	mysql_free_result($result);
 	return ($rowcnt == 0);
-
-//	$result = mysql_query("SELECT lat, lon FROM poi WHERE zoom <= '" . $zoom . "' ORDER BY RAND();");
-//	while ($row = mysql_fetch_row($result)) {
-//		if (dist($lat, $lon, $row[0], $row[1]) < $mindist[$zoom]) {
-//			mysql_free_result($result);
-//			return 0;
-//		}
-//	}
-//	mysql_free_result($result);
-//	return 1;
 }
 
 // Connect to the Database
