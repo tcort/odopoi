@@ -152,7 +152,7 @@ require_once('classes/Version.php');
             var feature = new OpenLayers.Feature(markers, lonLatMarker);
             feature.closeBox = true;
             feature.popupClass = OpenLayers.Class(OpenLayers.Popup.AnchoredBubble, {minSize: new OpenLayers.Size(300, 180) } );
-            feature.data.popupContentHTML = '<b>' + $(this).find("name").text() + '</b><br/>' + $(this).find("desc").text() + '<p><small>This point of interest is copyright <a href="http://www.openstreetmap.org/">OpenStreetMap</a> and its contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.</small></p>';
+            feature.data.popupContentHTML = '<p><b>' + $(this).find("name").text() + '</b></p>' + $(this).find("desc").text() + '<p><small>This point of interest is copyright <a href="http://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-By-SA</a>.</small></p>';
             feature.data.overflow = "auto";
             marker.feature = feature;
 
@@ -217,7 +217,7 @@ require_once('classes/Version.php');
       <div id="header"><h4>OpenDataMap.ca</h4></div>
       <p><big>Site Details</big></p>
       <p><small><b>Software</b>: The software that generated this page and interacts with a <a href="http://mysql.org">MySQL</a> database is called <em><a href="http://github.com/tcort/odopoi">odopoi</a></em>. It is <a href="http://www.gnu.org/philosophy/free-sw.html">Free Software</a> written in <a href="http://php.net/">PHP</a>. <em>odopoi</em> uses <a href="http://jquery.org">jQuery</a> for <a href="http://en.wikipedia.org/wiki/Ajax_%28programming%29">AJAX</a> and <a href="http://openlayers.org/">OpenLayers</a> for managing the map.</small></p>
-      <p><small><b>Data</b>: The maps and points of interest are copyright <a href="http://www.openstreetmap.org/">OpenStreetMap</a> and its contributors. Both are licenced <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.</small></p>
+      <p><small><b>Data</b>: The maps and points of interest are copyright <a href="http://www.openstreetmap.org/">OpenStreetMap</a> contributors. Both are licenced <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.</small></p>
       <p><small><b>Icons</b>: The marker icons used are from the <a href="http://code.google.com/p/google-maps-icons/">Maps icons collection</a> which is licensed <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC-By-SA</a>.</small></p>
       <p><big>Disclaimer</big></p>
       <p><small>OPENDATAMAP.CA PROVIDES INFORMATION ON AN "AS-IS" BASIS. OPENDATAMAP.CA MAKES NO WARRANTIES REGARDING THE INFORMATION PROVIDED, AND DISCLAIMS LIABILITY FOR DAMAGES RESULTING FROM ITS USE.</small></p>
