@@ -67,9 +67,10 @@ body {
 #sidebar {
 	float: right;
 	width: 20%;
-        height: 80%;
+        height: 100%;
 	color: #666666;
 	background: #eeeec7;
+	overflow: auto;
 }
 
 #sidetxt {
