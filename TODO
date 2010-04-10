@@ -15,7 +15,6 @@
 
 - Frontend
  * geoip/geolocation to determine where the map should be centered on the user's first visit
- * save location as a cookie so that if the user comes back tomorrow it is right where he/she left off
  * permalinks
  * edit/export links
 

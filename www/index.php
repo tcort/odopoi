@@ -61,8 +61,8 @@ require_once('classes/Version.php');
     // Coordinates for Ottawa, ON
     var lat=45.420833;
     var lon=-75.69;
-
     var zoom=12;
+
     var last_zoom = zoom;
         
     var map; // holds Map object
@@ -100,6 +100,36 @@ require_once('classes/Version.php');
       }
       return 0;
     }
+
+    function set_cookie(c_key, c_val) {
+      var c = c_key + '=' + c_val;
+
+      // cookie expires in 1 month
+      var dt = new Date();
+      dt.setTime(dt.getTime() + (30 * 24 * 60 * 60 * 1000));
+      c = c + '; expires=' + dt.toGMTString();
+      c = c + '; path=/';
+      document.cookie = c;
+    }
+
+    function get_cookie(c_key) {
+      var c_key_eq = c_key + "=";
+      var cookies = document.cookie.split(';');
+      var i;
+      for(i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i];
+        while (cookie.charAt(0)==' ') { 
+          cookie = cookie.substring(1, cookie.length);
+        }
+
+        if (cookie.indexOf(c_key_eq) == 0) {
+          return cookie.substring(c_key_eq.length, cookie.length);
+        }
+      }
+
+      return null;
+    }
+
 
     // When the map is moved, fetch some markers
     function moveend_listener(evt) {
@@ -174,6 +204,12 @@ require_once('classes/Version.php');
           }
         });
       });
+
+      var centerLonLat = map.getLonLatFromPixel(new OpenLayers.Pixel(mapsize.w / 2, mapsize.h / 2)). transform(map.getProjectionObject(),map.displayProjection);
+
+      set_cookie('lon', centerLonLat.lon);
+      set_cookie('lat', centerLonLat.lat);
+      set_cookie('zoom', map.getZoom());
     }
 
     // Initialize the map
@@ -203,7 +239,17 @@ require_once('classes/Version.php');
       map.addLayer(markers);
 
       map.addControl(new OpenLayers.Control.LayerSwitcher());
- 
+
+      var lat_cookie = get_cookie('lat');
+      var lon_cookie = get_cookie('lon');
+      var zoom_cookie = get_cookie('zoom');
+
+      if (lat_cookie != null && lon_cookie != null && zoom_cookie != null && -180.0 <= lon_cookie && lon_cookie < 180.0 && -90.0 <= lat_cookie && lat_cookie <= 90.0 && 0 <= zoom && zoom < 20) {
+        lat = lat_cookie;
+        lon = lon_cookie;
+        zoom = zoom_cookie;
+      }
+
       var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
       map.setCenter(lonLat, zoom);
     }
