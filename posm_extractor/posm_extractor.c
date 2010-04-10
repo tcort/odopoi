@@ -45,10 +45,10 @@
 #include <expat.h>
 
 #define BUFSIZE (4194304)
-#define LAT_MIN ( 41.50)
-#define LAT_MAX ( 83.25)
-#define LON_MIN (-141.25)
-#define LON_MAX (-47.50)
+#define LAT_MIN ( 44.50)
+#define LAT_MAX ( 47.50)
+#define LON_MIN (-77.50)
+#define LON_MAX (-73.50)
 
 /* for ottawa/gatineau: lat 45 to 47 | lon -77 to -74 */
 /* for all of Canada: lat 41.50 to 83.25 | lon -141.25 to -47.50 */
@@ -238,6 +238,10 @@ void endElement(void *userData, const char *ename)
 						char *k;
 						char *v;
 
+						if (strcmp("created_by", t->key) == 0) {
+							continue;
+						}
+
 						k = escapeQuotes(t->key);
 						v = escapeQuotes(t->value);
 
@@ -246,7 +250,30 @@ void endElement(void *userData, const char *ename)
 						r = join(r, "</td><td class=\"v\">");
 						free(tmp);
 						tmp = r;
-						r = join(r, v);
+						if (strcmp("url", t->key) == 0 || strcmp("website", t->key) == 0) {
+							r = join(r, "<a href=\"");
+							free(tmp);
+							tmp = r;
+
+							if (strncmp("http://", t->value, 8)) {
+								r = join(r, "http://");
+								free(tmp);
+								tmp = r;
+							}
+
+							r = join(r, v);
+							free(tmp);
+							tmp = r;
+							r = join(r, "\">");
+							free(tmp);
+							tmp = r;
+							r = join(r, v);
+							free(tmp);
+							tmp = r;
+							r = join(r, "</a>");
+						} else {
+							r = join(r, v);
+						}
 						free(tmp);
 						tmp = r;
 						r = join(r, "</td></tr>");
