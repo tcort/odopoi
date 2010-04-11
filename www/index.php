@@ -58,10 +58,39 @@ require_once('classes/Version.php');
   <script type="text/javascript" src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js" charset="utf-8"></script>
 
   <script type="text/javascript" charset="utf-8">
-    // Coordinates for Ottawa, ON
-    var lat=45.420833;
-    var lon=-75.69;
-    var zoom=12;
+    function set_cookie(c_key, c_val) {
+      var c = c_key + '=' + c_val;
+
+      // cookie expires in 1 month
+      var dt = new Date();
+      dt.setTime(dt.getTime() + (30 * 24 * 60 * 60 * 1000));
+      c = c + '; expires=' + dt.toGMTString();
+      c = c + '; path=/';
+      document.cookie = c;
+    }
+
+    function get_cookie(c_key) {
+      var c_key_eq = c_key + "=";
+      var cookies = document.cookie.split(';');
+      var i;
+      for(i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i];
+        while (cookie.charAt(0)==' ') { 
+          cookie = cookie.substring(1, cookie.length);
+        }
+
+        if (cookie.indexOf(c_key_eq) == 0) {
+          return cookie.substring(c_key_eq.length, cookie.length);
+        }
+      }
+
+      return null;
+    }
+
+    // Coordinates for Ottawa, ON or values saved in cookies
+    var lat = get_cookie('lat') != null ? parseFloat(get_cookie('lat').replace(/^\s+|\s+$/g,"")) : 45.420833;
+    var lon = get_cookie('lon') != null ? parseFloat(get_cookie('lon').replace(/^\s+|\s+$/g,"")) : -75.69;
+    var zoom = get_cookie('zoom') != null ? parseInt(get_cookie('zoom').replace(/^\s+|\s+$/g,"")) : 12;
 
     var last_zoom = zoom;
         
@@ -100,36 +129,6 @@ require_once('classes/Version.php');
       }
       return 0;
     }
-
-    function set_cookie(c_key, c_val) {
-      var c = c_key + '=' + c_val;
-
-      // cookie expires in 1 month
-      var dt = new Date();
-      dt.setTime(dt.getTime() + (30 * 24 * 60 * 60 * 1000));
-      c = c + '; expires=' + dt.toGMTString();
-      c = c + '; path=/';
-      document.cookie = c;
-    }
-
-    function get_cookie(c_key) {
-      var c_key_eq = c_key + "=";
-      var cookies = document.cookie.split(';');
-      var i;
-      for(i = 0; i < cookies.length; i++) {
-        var cookie = cookies[i];
-        while (cookie.charAt(0)==' ') { 
-          cookie = cookie.substring(1, cookie.length);
-        }
-
-        if (cookie.indexOf(c_key_eq) == 0) {
-          return cookie.substring(c_key_eq.length, cookie.length);
-        }
-      }
-
-      return null;
-    }
-
 
     // When the map is moved, fetch some markers
     function moveend_listener(evt) {
@@ -239,16 +238,6 @@ require_once('classes/Version.php');
       map.addLayer(markers);
 
       map.addControl(new OpenLayers.Control.LayerSwitcher());
-
-      var lat_cookie = get_cookie('lat');
-      var lon_cookie = get_cookie('lon');
-      var zoom_cookie = get_cookie('zoom');
-
-      if (lat_cookie != null && lon_cookie != null && zoom_cookie != null && -180.0 <= lon_cookie && lon_cookie < 180.0 && -90.0 <= lat_cookie && lat_cookie <= 90.0 && 0 <= zoom && zoom < 20) {
-        lat = lat_cookie;
-        lon = lon_cookie;
-        zoom = zoom_cookie;
-      }
 
       var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
       map.setCenter(lonLat, zoom);
