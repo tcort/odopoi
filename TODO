@@ -4,8 +4,5 @@
 - Translation
  * l10n, i18n, and then translate to French.
 
-- Documentation
- * Write README
-
 - Frontend
  * geoip/geolocation to determine where the map should be centered on the user's first visit

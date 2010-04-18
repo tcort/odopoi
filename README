@@ -1,0 +1,18 @@
+	           _                   _ 
+	  ___   __| | ___  _ __   ___ (_)
+	 / _ \ / _` |/ _ \| '_ \ / _ \| |
+	| (_) | (_| | (_) | |_) | (_) | |
+	 \___/ \__,_|\___/| .__/ \___/|_|
+	                  |_|            
+	Open Data Ottawa Points of Interest
+	By Thomas Cort <linuxgeek@gmail.com>
+
+Overview
+--------
+This web application is written in PHP/MySQL and displays
+points of interest, extracted from OpenStreetMap's planet.osm,
+on an OpenStreetMap using OpenLayers.
+
+Live Demo
+---------
+http://opendatamap.ca/
