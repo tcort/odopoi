@@ -222,7 +222,7 @@ require_once('classes/Version.php');
         units: 'm',
         projection: new OpenLayers.Projection("EPSG:900913"),
         displayProjection: new OpenLayers.Projection("EPSG:4326"),
-        eventListeners: { "moveend": moveend_listener }
+        eventListeners: { "moveend": moveend_listener, "zoomend": moveend_listener }
       } );
  
       var layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
