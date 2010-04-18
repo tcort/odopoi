@@ -1,20 +1,11 @@
-- Data Loader
- * Handle POI that are defined as ways like a building outline tagged as a museum.
-
 - Data Extractor
- * Re-write the dump utility using the new classes
+ * Re-write the GPX dump utility using the new classes
 
 - Translation
  * l10n, i18n, and then translate to French.
-
-- AJAX
- * Validate the data returned by api.php.
 
 - Documentation
  * Write README
 
 - Frontend
  * geoip/geolocation to determine where the map should be centered on the user's first visit
- * permalinks
- * edit/export links
-
