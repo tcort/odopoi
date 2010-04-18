@@ -176,6 +176,32 @@ void startElement(void *userData, const char *ename, const char **atts)
 			if (amenity) {
 				matched = 1;
 			}
+
+			if (!amenity) {
+				amenity = getTagValue("highway", atts);
+				if (amenity) {
+					if (!strcmp(amenity, "bus_stop")) {
+						matched = 1;
+					} else {
+						free(amenity);
+						amenity = NULL;
+					}
+				}
+			}
+
+			if (!amenity) {
+				amenity = getTagValue("tourism", atts);
+				if (amenity) {
+					matched = 1;
+				}
+			}
+
+			if (!amenity) {
+				amenity = getTagValue("shop", atts);
+				if (amenity) {
+					matched = 1;
+				}
+			}
 		}
 
 		if (!name) {
