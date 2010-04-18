@@ -45,10 +45,10 @@
 #include <expat.h>
 
 #define BUFSIZE (4194304)
-#define LAT_MIN ( 44.50)
-#define LAT_MAX ( 47.50)
-#define LON_MIN (-77.50)
-#define LON_MAX (-73.50)
+#define LAT_MIN ( 41.50)
+#define LAT_MAX ( 83.25)
+#define LON_MIN (-141.25)
+#define LON_MAX (-47.50)
 
 /* for ottawa/gatineau: lat 45 to 47 | lon -77 to -74 */
 /* for all of Canada: lat 41.50 to 83.25 | lon -141.25 to -47.50 */
@@ -404,7 +404,7 @@ void endElement(void *userData, const char *ename)
 
 int main(int argc, char *argv[], char *envp[])
 {
-
+	int i;
 	FILE *f;
 	char buf[BUFSIZE];
 	int len;
@@ -417,18 +417,10 @@ int main(int argc, char *argv[], char *envp[])
 	done = 0;
 	depth = 0;
 
-	if (argc != 2) {
-		fprintf(stderr, "To read from a file:\n\tposm_extractor [filename.osm]\nTo read from stdin:\n\tposm_extractor -\n");
+	if (argc < 2) {
+		fprintf(stderr, "To read from a file:\n\tposm_extractor filename.osm [filename-2.osm ...]\nTo read from stdin:\n\tposm_extractor -\n");
 		return -1;
 	}
-
-	parser = XML_ParserCreate("UTF-8");
-	if (parser == NULL) {
-		fprintf(stderr, "Could not initialize parser.\n");
-	}
-
-	XML_SetUserData(parser, &depth);
-	XML_SetElementHandler(parser, startElement, endElement);
 
 	fprintf(stdout, "SET NAMES 'utf8' COLLATE 'utf8_unicode_ci';\n");
 	fprintf(stdout, "SET CHARACTER SET 'utf8';\n");
@@ -436,35 +428,46 @@ int main(int argc, char *argv[], char *envp[])
 	fprintf(stdout, "DELETE FROM poi;\n");
 	fflush(stdout);
 
-	if (strlen(argv[1]) == 1 && argv[1][0] == '-') {
-		f = stdin;
-	} else {
-		f = fopen(argv[1], "rb");
-		if (f == NULL) {
-			fprintf(stderr, "Could not open '%s'\n", argv[1]);
-			XML_ParserFree(parser);
-			return 1;
+	for (i = 1; i < argc; i++) {
+
+		parser = XML_ParserCreate("UTF-8");
+		if (parser == NULL) {
+			fprintf(stderr, "Could not initialize parser.\n");
 		}
-	}
 
-	do {
-		len = fread(buf, sizeof(char), BUFSIZE, f);
-		done = feof(f);
+		XML_SetUserData(parser, &depth);
+		XML_SetElementHandler(parser, startElement, endElement);
 
-		if (!XML_Parse(parser, buf, len, done)) {
+		if (strlen(argv[i]) == 1 && argv[i][0] == '-') {
+			f = stdin;
+		} else {
+			f = fopen(argv[i], "rb");
+			if (f == NULL) {
+				fprintf(stderr, "Could not open '%s'\n", argv[i]);
+				XML_ParserFree(parser);
+				return 1;
+			}
+		}
+
+		do {
+			len = fread(buf, sizeof(char), BUFSIZE, f);
+			done = feof(f);
+
+			if (!XML_Parse(parser, buf, len, done)) {
+				fclose(f);
+				fprintf(stderr, "Error (%d): %s at line %d\n", XML_GetErrorCode(parser), XML_ErrorString(XML_GetErrorCode(parser)), (int) XML_GetCurrentLineNumber(parser));
+				XML_ParserFree(parser);
+				return 1;
+			}
+
+		} while (!done);
+
+		if (f != stdin) {
 			fclose(f);
-			fprintf(stderr, "Error (%d): %s at line %d\n", XML_GetErrorCode(parser), XML_ErrorString(XML_GetErrorCode(parser)), (int) XML_GetCurrentLineNumber(parser));
-			XML_ParserFree(parser);
-			return 1;
 		}
 
-	} while (!done);
-
-	if (f != stdin) {
-		fclose(f);
+		XML_ParserFree(parser);
 	}
-
-	XML_ParserFree(parser);
 
 	return 0;
 }
