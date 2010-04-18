@@ -181,7 +181,7 @@ require_once('classes/Version.php');
             var feature = new OpenLayers.Feature(markers, lonLatMarker);
             feature.closeBox = true;
             feature.popupClass = OpenLayers.Class(OpenLayers.Popup.AnchoredBubble, {minSize: new OpenLayers.Size(300, 180) } );
-            feature.data.popupContentHTML = '<p><b>' + $(this).find("name").text() + '</b></p>' + $(this).find("desc").text() + '<p><small>This point of interest is copyright <a href="http://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-By-SA</a>.</small></p>';
+            feature.data.popupContentHTML = '<p><b>' + $(this).find("name").text() + '</b></p>' + $(this).find("desc").text();
             feature.data.overflow = "auto";
             marker.feature = feature;
 
@@ -215,7 +215,7 @@ require_once('classes/Version.php');
     function init() {
 
       map = new OpenLayers.Map ("map", {
-        controls: [new OpenLayers.Control.Navigation(), new OpenLayers.Control.PanZoomBar(), new OpenLayers.Control.Attribution(), new OpenLayers.Control.ScaleLine()],
+        controls: [new OpenLayers.Control.Navigation(), new OpenLayers.Control.PanZoomBar()],
         maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),
         maxResolution: 156543.0399,
         numZoomLevels: 19,
