@@ -36,22 +36,21 @@ SET NAMES 'utf8' COLLATE 'utf8_unicode_ci';
 SET CHARACTER SET 'utf8';
 SET collation_connection = 'utf8_general_ci';
 
-DROP TABLE IF EXISTS poi;
-CREATE TABLE poi (
-	id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+DROP TABLE IF EXISTS node;
+CREATE TABLE node (
+	id BIGINT UNSIGNED NOT NULL PRIMARY KEY,
+	version MEDIUMINT UNSIGNED NOT NULL,
+	timestamp TIMESTAMP NOT NULL,
 	lat DECIMAL(15,12) NOT NULL,
 	lon DECIMAL(15,12) NOT NULL,
-	zoom TINYINT NOT NULL DEFAULT '0',
-	name VARCHAR(128) COLLATE utf8_unicode_ci,
-	descr TEXT COLLATE utf8_unicode_ci,
-	sym VARCHAR(64) COLLATE utf8_unicode_ci
+	zoom TINYINT NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 CHARACTER SET utf8 COLLATE utf8_general_ci;
 
-CREATE INDEX wptz on poi (lat,lon,zoom);
-CREATE INDEX wpt on poi (lat,lon);
-CREATE INDEX zm on poi (zoom);
-DROP FUNCTION IF EXISTS dist_calc;
-CREATE FUNCTION dist_calc (lat_a DECIMAL(15,12), lat_b DECIMAL(15,12), lon_a DECIMAL(15,12), lon_b DECIMAL(15,12))
-RETURNS FLOAT DETERMINISTIC
-RETURN ((DEGREES(ACOS((SIN(RADIANS(lat_a)) * SIN(RADIANS(lat_b))) + (COS(RADIANS(lat_a)) * COS(RADIANS(lat_b)) * COS(RADIANS(lon_a - lon_b)))))) * 69.09);
+DROP TABLE IF EXISTS tag;
+CREATE TABLE tag (
+	node_id BIGINT UNSIGNED NOT NULL,
+	k TEXT NOT NULL COLLATE utf8_unicode_ci,
+	v TEXT NOT NULL COLLATE utf8_unicode_ci
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+CREATE INDEX node_id_idx ON tag (node_id);
