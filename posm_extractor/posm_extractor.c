@@ -101,6 +101,9 @@ char *escapeQuotes(const char *unsafe)
 		if (safe[j] == '\'') {
 			j++;
 			safe[j] = '\'';
+		} else if (safe[j] == '\\') {
+			j++;
+			safe[j] = '\\';
 		}
 	}
 
@@ -189,11 +192,11 @@ void endElement(void *userData, const char *ename)
 
 		if (isPOI()) {
 
-			fprintf(stdout, "INSERT INTO node (id, version, timestamp, lat, lon) VALUES ('%s', '%s', '%s', '%s', '%s');\n", _id, _version, _timestamp, _lat, _lon);
+			fprintf(stdout, "INSERT IGNORE INTO node (id, version, timestamp, lat, lon) VALUES ('%s', '%s', '%s', '%s', '%s');\n", _id, _version, _timestamp, _lat, _lon);
 			for (cur = tag_list; cur; cur = cur->next) {
 				char *_k = escapeQuotes(cur->key);
 				char *_v = escapeQuotes(cur->value);
-				fprintf(stdout, "INSERT INTO tag (node_id, k, v) VALUES ('%s', '%s', '%s');\n", _id, _k, _v);
+				fprintf(stdout, "INSERT IGNORE INTO tag (node_id, k, v) VALUES ('%s', '%s', '%s');\n", _id, _k, _v);
 				FREE(_k);
 				FREE(_v);
 			}

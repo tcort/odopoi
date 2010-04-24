@@ -49,8 +49,15 @@ CREATE TABLE node (
 DROP TABLE IF EXISTS tag;
 CREATE TABLE tag (
 	node_id BIGINT UNSIGNED NOT NULL,
-	k TEXT NOT NULL COLLATE utf8_unicode_ci,
+	k VARCHAR(255) NOT NULL COLLATE utf8_unicode_ci,
 	v TEXT NOT NULL COLLATE utf8_unicode_ci
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE INDEX node_id_idx ON tag (node_id);
+CREATE UNIQUE INDEX tag_key_idx ON tag (node_id,k);
+
+DROP FUNCTION IF EXISTS dist_calc;
+CREATE FUNCTION dist_calc (lat_a DECIMAL(15,12), lat_b DECIMAL(15,12), lon_a DECIMAL(15,12), lon_b DECIMAL(15,12))
+RETURNS FLOAT DETERMINISTIC
+RETURN ((DEGREES(ACOS((SIN(RADIANS(lat_a)) * SIN(RADIANS(lat_b))) + (COS(RADIANS(lat_a)) * COS(RADIANS(lat_b)) * COS(RADIANS(lon_a - lon_b)))))) * 69.09);
+
