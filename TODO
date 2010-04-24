@@ -7,3 +7,6 @@
 
 - Backend
  * Parallelize posm_extractor
+
+- Utilities
+ * symbol-check.php needs to be updated for database-2.0
