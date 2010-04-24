@@ -115,7 +115,7 @@ function can_place_at_zoom($lat, $lon, $zoom) {
 	global $dlat;
 	global $dlon;
 
-	$result = mysql_query("SELECT dist_calc(" . $lat . ",lat," . $lon . ",lon) AS dist FROM poi WHERE zoom <= '" . $zoom . "' AND (lat BETWEEN " . ($lat - $dlat[$zoom]) . " AND " . ($lat + $dlat[$zoom]) . ") AND (lon BETWEEN " . ($lon - $dlon[$zoom]) . " AND " . ($lon + $dlon[$zoom]) . ") HAVING dist < " . $mindist[$zoom] . ";");
+	$result = mysql_query("SELECT dist_calc(" . $lat . ",lat," . $lon . ",lon) AS dist FROM node WHERE zoom <= '" . $zoom . "' AND (lat BETWEEN " . ($lat - $dlat[$zoom]) . " AND " . ($lat + $dlat[$zoom]) . ") AND (lon BETWEEN " . ($lon - $dlon[$zoom]) . " AND " . ($lon + $dlon[$zoom]) . ") HAVING dist < " . $mindist[$zoom] . ";");
 	$rowcnt = mysql_num_rows($result);
 	mysql_free_result($result);
 	return ($rowcnt == 0);
@@ -132,19 +132,19 @@ function can_place_at_zoom($lat, $lon, $zoom) {
 @mysql_query("SET CHARACTER SET 'utf8'");
 @mysql_query("SET collation_connection = 'utf8_general_ci'");
 
-// set all poi to zoom 18
-mysql_query("UPDATE poi SET zoom = '18';");
+// set all node to zoom 18
+mysql_query("UPDATE node SET zoom = '18';");
 
 // randomly bring one up to the top level
-mysql_query("UPDATE poi SET zoom = '0' WHERE zoom = '18' ORDER BY RAND() LIMIT 1;");
+mysql_query("UPDATE node SET zoom = '0' WHERE zoom = '18' ORDER BY RAND() LIMIT 1;");
 
 for ($current_level = 0; $current_level < 18; $current_level++) {
 
 	// go through the lowest level to see if there are any candidates to bring up
-	$result = mysql_query("SELECT lat, lon FROM poi WHERE zoom = '18' ORDER BY RAND();");
+	$result = mysql_query("SELECT lat, lon FROM node WHERE zoom = '18' ORDER BY RAND();");
 	while ($row = mysql_fetch_row($result)) {
 		if (can_place_at_zoom($row[0], $row[1], $current_level) == 1) {
-			mysql_query("UPDATE poi SET zoom = '" . $current_level . "' WHERE lat = " . $row[0] . " AND lon = " . $row[1] . ";");
+			mysql_query("UPDATE node SET zoom = '" . $current_level . "' WHERE lat = " . $row[0] . " AND lon = " . $row[1] . ";");
 		}
 	}
 	mysql_free_result($result);
