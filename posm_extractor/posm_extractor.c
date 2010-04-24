@@ -156,6 +156,8 @@ void startElement(void *userData, const char *ename, const char **atts)
 int isPOI() {
 	int found_name = 0;
 	int found_amenity = 0;
+	int found_shop = 0;
+	int found_tourism = 0;
 	struct tag *cur;
 
 	if (tag_list == NULL) {
@@ -169,9 +171,13 @@ int isPOI() {
 			found_name = 1;
 		} else if (!strcmp(cur->key, "amenity")) {
 			found_amenity = 1;
+		} else if (!strcmp(cur->key, "shop")) {
+			found_amenity = 1;
+		} else if (!strcmp(cur->key, "tourism")) {
+			found_amenity = 1;
 		}
 
-		if (found_name && found_amenity) {
+		if (found_name && (found_amenity || found_shop || found_tourism)) {
 			return 1;
 		}
 	}
