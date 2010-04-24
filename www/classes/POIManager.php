@@ -58,6 +58,43 @@ class POIManager {
 		}
 	}
 
+	public function getWebsite($node_id) {
+		$website = $this->getValue($node_id, "website");
+		if (strcmp("http://",substr($website,0,7))) {
+			$website = "http://" . $website;
+		}
+		return $website;
+	}
+
+	public function getName($node_id) {
+		$name = $this->getValue($node_id, "name");
+		$website = $this->getWebsite($node_id);
+		if (!strcmp($website,"http://Unknown")) {
+			return $name;
+		} else {
+			return "<a href=\"" . $website . "\">" . $name . "</a>";
+		}
+	}
+
+	public function getSymbol($node_id) {
+		$sym = $this->getValue($node_id, "amenity");
+		if (strcmp($sym, "Unknown")) {
+			return $sym;
+		}
+
+		$sym = $this->getValue($node_id, "tourism");
+		if (strcmp($sym, "Unknown")) {
+			return $sym;
+		}
+
+		$sym = $this->getValue($node_id, "shop");
+		if (strcmp($sym, "Unknown")) {
+			return $sym;
+		}
+
+		return $sym;
+	}
+
 	public function getWpts($min_lat, $max_lat, $min_lon, $max_lon, $zoom) {
 		$sql = "SELECT id, lat, lon FROM node WHERE lat BETWEEN '" . $this->db->escape($min_lat) . "' AND '" . $this->db->escape($max_lat) . "' AND lon BETWEEN '" . $this->db->escape($min_lon) . "' AND '" . $this->db->escape($max_lon) . "' AND zoom <= '" . $this->db->escape($zoom) . " ORDER BY RAND() LIMIT 500';";
 		$result = $this->db->query($sql);
@@ -66,9 +103,9 @@ class POIManager {
 		while ($result->hasNext()) {
 			$row = $result->next();
 			$wpt = new wpt($row[1],$row[2]);
-			$wpt->setName($this->getValue($row[0], "name"));
+			$wpt->setName($this->getName($row[0]));
 			$wpt->setDesc("");
-			$wpt->setSym($this->getValue($row[0], "amenity"));
+			$wpt->setSym($this->getSymbol($row[0]));
 
 			$gpx->addWpt($wpt);
 		}
