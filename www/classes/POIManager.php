@@ -47,17 +47,28 @@ class POIManager {
 		$this->db = $db;
 	}
 
+	public function getValue($node_id, $key) {
+		$sql = "SELECT v FROM tag WHERE node_id = '" . $this->db->escape($node_id) . "' AND k = '" . $this->db->escape($key) . "';";
+		$result = $this->db->query($sql);
+		if ($result->hasNext()) {
+			$row = $result->next();
+			return $row[0];
+		} else {
+			return "Unknown";
+		}
+	}
+
 	public function getWpts($min_lat, $max_lat, $min_lon, $max_lon, $zoom) {
-		$sql = "SELECT lat, lon FROM node WHERE lat BETWEEN '" . $this->db->escape($min_lat) . "' AND '" . $this->db->escape($max_lat) . "' AND lon BETWEEN '" . $this->db->escape($min_lon) . "' AND '" . $this->db->escape($max_lon) . "' AND zoom <= '" . $this->db->escape($zoom) . " ORDER BY RAND() LIMIT 500';";
+		$sql = "SELECT id, lat, lon FROM node WHERE lat BETWEEN '" . $this->db->escape($min_lat) . "' AND '" . $this->db->escape($max_lat) . "' AND lon BETWEEN '" . $this->db->escape($min_lon) . "' AND '" . $this->db->escape($max_lon) . "' AND zoom <= '" . $this->db->escape($zoom) . " ORDER BY RAND() LIMIT 500';";
 		$result = $this->db->query($sql);
 		$gpx = new gpx();
 
 		while ($result->hasNext()) {
 			$row = $result->next();
-			$wpt = new wpt($row[0],$row[1]);
-			$wpt->setName("XXX");
-			$wpt->setDesc("XXX");
-			$wpt->setSym("pizza");
+			$wpt = new wpt($row[1],$row[2]);
+			$wpt->setName($this->getValue($row[0], "name"));
+			$wpt->setDesc("");
+			$wpt->setSym($this->getValue($row[0], "amenity"));
 
 			$gpx->addWpt($wpt);
 		}
