@@ -1,8 +1,9 @@
-- Data Extractor
- * Re-write the GPX dump utility using the new classes
-
 - Translation
  * l10n, i18n, and then translate to French.
 
 - Frontend
  * geoip/geolocation to determine where the map should be centered on the user's first visit
+ * Add link to GPX for the current map
+
+- Backend
+ * Parallelize posm_extractor
