@@ -102,7 +102,4 @@ class gpx {
 	}
 }
 
-$gpx = new gpx();
-echo $gpx->toXml();
-
 ?>

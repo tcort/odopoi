@@ -48,16 +48,16 @@ class POIManager {
 	}
 
 	public function getWpts($min_lat, $max_lat, $min_lon, $max_lon, $zoom) {
-		$sql = "SELECT lat, lon, name, descr, sym FROM poi WHERE lat BETWEEN '" . $this->db->escape($min_lat) . "' AND '" . $this->db->escape($max_lat) . "' AND lon BETWEEN '" . $this->db->escape($min_lon) . "' AND '" . $this->db->escape($max_lon) . "' AND zoom <= '" . $this->db->escape($zoom) . " ORDER BY RAND() LIMIT 500';";
+		$sql = "SELECT lat, lon FROM node WHERE lat BETWEEN '" . $this->db->escape($min_lat) . "' AND '" . $this->db->escape($max_lat) . "' AND lon BETWEEN '" . $this->db->escape($min_lon) . "' AND '" . $this->db->escape($max_lon) . "' AND zoom <= '" . $this->db->escape($zoom) . " ORDER BY RAND() LIMIT 500';";
 		$result = $this->db->query($sql);
 		$gpx = new gpx();
 
 		while ($result->hasNext()) {
 			$row = $result->next();
 			$wpt = new wpt($row[0],$row[1]);
-			$wpt->setName($row[2]);
-			$wpt->setDesc($row[3]);
-			$wpt->setSym($row[4]);
+			$wpt->setName("XXX");
+			$wpt->setDesc("XXX");
+			$wpt->setSym("pizza");
 
 			$gpx->addWpt($wpt);
 		}
