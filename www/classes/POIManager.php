@@ -76,6 +76,23 @@ class POIManager {
 		}
 	}
 
+	public function getDesc($node_id) {
+		$filter_keys = array("don't put anything here","amenity","tourism","shop","name","website","created_by");
+
+		$desc = "<table class=\"poi\">";
+
+		$sql = "SELECT k,v FROM tag WHERE node_id = '" . $this->db->escape($node_id) . "';";
+		$result = $this->db->query($sql);
+		if ($result->hasNext()) {
+			$row = $result->next();
+			if (array_search(trim($row[0]), $filter_keys) == FALSE) {
+				$desc .= "<tr><td class=\"k\">" . $row[0] . "</td><td class=\"v\">" . $row[1] . "</td></tr>";
+			}
+		}
+
+		return $desc . "</table>";
+	}
+
 	public function getSymbol($node_id) {
 		$sym = $this->getValue($node_id, "amenity");
 		if (strcmp($sym, "Unknown")) {
@@ -104,7 +121,7 @@ class POIManager {
 			$row = $result->next();
 			$wpt = new wpt($row[1],$row[2]);
 			$wpt->setName($this->getName($row[0]));
-			$wpt->setDesc("");
+			$wpt->setDesc($this->getDesc($row[0]));
 			$wpt->setSym($this->getSymbol($row[0]));
 
 			$gpx->addWpt($wpt);
