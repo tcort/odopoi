@@ -34,15 +34,21 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- * gcc posm_extractor.c -lexpat -Wall -Werror -ansi -g3 -o posm_extractor
- */
-
 #define _BSD_SOURCE
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <strings.h>
+#include <unistd.h>
 #include <expat.h>
+
+#define FREE(x)				\
+	do {				\
+		if (x != NULL) {	\
+			free(x);	\
+		}			\
+	} while (0)
 
 #define BUFSIZE (4194304)
 #define LAT_MIN ( 41.50)
@@ -60,10 +66,12 @@ typedef struct tag {
 } tag;
 
 int parsing_node = 0;
+char *id = NULL;
+char *version = NULL;
+char *timestamp = NULL;
 char *lat = NULL;
 char *lon = NULL;
-char *amenity = NULL;
-char *name = NULL;
+
 tag *tag_list = NULL;
 
 char *escapeQuotes(const char *unsafe)
@@ -73,6 +81,10 @@ char *escapeQuotes(const char *unsafe)
 	int len;
 	int i;
 	int j;
+
+	if (unsafe == NULL) {
+		return NULL;
+	}
 
 	ulen = strlen(unsafe);
 	len = (ulen * 2) + 1;
@@ -112,270 +124,96 @@ char *getAttribute(const char *name, const char **atts)
 	return attribute;
 }
 
-char *getTagValue(const char *key, const char **atts)
-{
-	int i;
-	int j;
-	char *value;
-
-	value = NULL;
-
-	/* locate key */
-	for (i = 0; atts[i]; i = i + 2) {
-		if (!strcmp(atts[i], "k") && !strcmp(atts[i + 1], key)) {
-			for (j = 0; atts[j]; j = j + 2) {
-				if (!strcmp(atts[j], "v")) {
-					value = strdup(atts[j + 1]);
-					break;
-				}
-			}
-			break;
-		}
-	}
-
-	return value;
-}
-
-char *join(char *a, char *b)
-{
-	char *result;
-	int lena;
-	int lenb;
-
-	lena = 0;
-	lenb = 0;
-
-	if (a) {
-		lena = strlen(a);
-	}
-
-	if (b) {
-		lenb = strlen(b);
-	}
-
-	result = (char *) malloc((sizeof(char) * (lena + lenb)) + 1);
-	if (!result) {
-		fprintf(stderr, "malloc() failed\n");
-		exit(1);
-	}
-	memset(result, '\0', (sizeof(char) * (lena + lenb)) + 1);
-
-	strcpy(result, a);
-	strcat(result, b);
-
-	return result;
-}
-
 void startElement(void *userData, const char *ename, const char **atts)
 {
 	if (parsing_node && !strcmp(ename, "tag")) {
-		int matched = 0;
+		tag *t;
 
-		if (!amenity) {
-			amenity = getTagValue("amenity", atts);
-			if (amenity) {
-				matched = 1;
-			}
-
-			if (!amenity) {
-				amenity = getTagValue("highway", atts);
-				if (amenity) {
-					if (!strcmp(amenity, "bus_stop")) {
-						matched = 1;
-					} else {
-						free(amenity);
-						amenity = NULL;
-					}
-				}
-			}
-
-			if (!amenity) {
-				amenity = getTagValue("tourism", atts);
-				if (amenity) {
-					matched = 1;
-				}
-			}
-
-			if (!amenity) {
-				amenity = getTagValue("shop", atts);
-				if (amenity) {
-					matched = 1;
-				}
-			}
+		t = (tag *) malloc(sizeof(tag));
+		if (!t) {
+			fprintf(stderr, "malloc() failed\n");
+			exit(1);
 		}
+		memset(t, '\0', sizeof(tag));
 
-		if (!name) {
-			name = getTagValue("name", atts);
-			if (name) {
-				matched = 1;
-			}
-		}
-
-		if (!matched) {
-			tag *t;
-
-			t = (tag *) malloc(sizeof(tag));
-			if (!t) {
-				fprintf(stderr, "malloc() failed\n");
-				exit(1);
-			}
-			memset(t, '\0', sizeof(tag));
-
-			t->key = getAttribute("k", atts);
-			t->value = getAttribute("v", atts);
-			t->next = tag_list;
-			tag_list = t;
-		}
-
+		t->key = getAttribute("k", atts);
+		t->value = getAttribute("v", atts);
+		t->next = tag_list;
+		tag_list = t;
 	} else if (!strcmp(ename, "node")) {
 		parsing_node = 1;
+		id = getAttribute("id", atts);
+		version = getAttribute("version", atts);
+		timestamp = getAttribute("timestamp", atts);
 		lat = getAttribute("lat", atts);
 		lon = getAttribute("lon", atts);
 	}
 }
 
+int isPOI() {
+	int found_name = 0;
+	int found_amenity = 0;
+	struct tag *cur;
+
+	if (tag_list == NULL) {
+		return 0;
+	}
+
+	for (cur = tag_list; cur; cur = cur->next) {
+		/* TODO: add bus stop check */
+
+		if (!strcmp(cur->key, "name")) {
+			found_name = 1;
+		} else if (!strcmp(cur->key, "amenity")) {
+			found_amenity = 1;
+		}
+
+		if (found_name && found_amenity) {
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
 void endElement(void *userData, const char *ename)
 {
 	if (!strcmp(ename, "node")) {
-		if (amenity && name && lat && lon) {
-			char *tmp;
-			char *a;
-			char *n;
-			char *la;
-			char *lo;
-			char *d;
+		struct tag *cur;
+		int i;
+		char *_id = escapeQuotes(id);
+		char *_version = escapeQuotes(version);
+		char *_timestamp = escapeQuotes(timestamp);
+		char *_lat = escapeQuotes(lat);
+		char *_lon = escapeQuotes(lon);
 
-			double dlat = strtod(lat, NULL);
-			double dlon = strtod(lon, NULL);
-			if (LAT_MIN <= dlat && dlat <= LAT_MAX && LON_MIN <= dlon && dlon <= LON_MAX) {
-				d = strdup("");
+		if (isPOI()) {
 
-				if (tag_list) {
-					tag *t;
-
-					if (d) {
-						free(d);
-					}
-
-					d = strdup("<table class=\"poi\">");
-
-					for (t = tag_list; t; t = t->next) {
-						char *r;
-						char *k;
-						char *v;
-
-						if (strcmp("created_by", t->key) == 0) {
-							continue;
-						}
-
-						k = escapeQuotes(t->key);
-						v = escapeQuotes(t->value);
-
-						r = join("<tr><td class=\"k\">", k);
-						tmp = r;
-						r = join(r, "</td><td class=\"v\">");
-						free(tmp);
-						tmp = r;
-						if (strcmp("url", t->key) == 0 || strcmp("website", t->key) == 0) {
-							r = join(r, "<a href=\"");
-							free(tmp);
-							tmp = r;
-
-							if (strncmp("http://", t->value, 8)) {
-								r = join(r, "http://");
-								free(tmp);
-								tmp = r;
-							}
-
-							r = join(r, v);
-							free(tmp);
-							tmp = r;
-							r = join(r, "\">");
-							free(tmp);
-							tmp = r;
-							r = join(r, v);
-							free(tmp);
-							tmp = r;
-							r = join(r, "</a>");
-						} else {
-							r = join(r, v);
-						}
-						free(tmp);
-						tmp = r;
-						r = join(r, "</td></tr>");
-						free(tmp);
-						tmp = d;
-						d = join(d, r);
-						free(tmp);
-						free(r);
-
-						if (k) {
-							free(k);
-							k = NULL;
-						}
-						if (v) {
-							free(v);
-							v = NULL;
-						}
-					}
-
-					tmp = d;
-					d = join(d, "</table>");
-					free(tmp);
-				}
-
-				a = escapeQuotes(amenity);
-				n = escapeQuotes(name);
-				la = escapeQuotes(lat);
-				lo = escapeQuotes(lon);
-				tmp = escapeQuotes(d);
-				free(d);
-				d = tmp;
-
-				fprintf(stdout, "INSERT INTO poi (lat, lon, name, descr, sym) VALUES (%s, %s, '%s', '%s', '%s');\n", la, lo, n, d, a);
-				fflush(stdout);
-
-				if (a) {
-					free(a);
-					a = NULL;
-				}
-
-				if (n) {
-					free(n);
-					n = NULL;
-				}
-
-				if (la) {
-					free(la);
-					la = NULL;
-				}
-
-				if (lo) {
-					free(lo);
-					lo = NULL;
-				}
-
-				if (d) {
-					free(d);
-					d = NULL;
-				}
-
+			fprintf(stdout, "INSERT INTO node (id, version, timestamp, lat, lon) VALUES ('%s', '%s', '%s', '%s', '%s');\n", _id, _version, _timestamp, _lat, _lon);
+			for (cur = tag_list; cur; cur = cur->next) {
+				char *_k = escapeQuotes(cur->key);
+				char *_v = escapeQuotes(cur->value);
+				fprintf(stdout, "INSERT INTO tag (node_id, k, v) VALUES ('%s', '%s', '%s');\n", _id, _k, _v);
+				FREE(_k);
+				FREE(_v);
 			}
+			fflush(stdout);
+
 		}
 
 		parsing_node = 0;
 
-		free(lat);
-		lat = NULL;
+		FREE(id);
+		FREE(version);
+		FREE(timestamp);
+		FREE(lat);
+		FREE(lon);
 
-		free(lon);
-		lon = NULL;
-
-		free(amenity);
-		amenity = NULL;
-
-		free(name);
-		name = NULL;
+		FREE(_id);
+		FREE(_version);
+		FREE(_timestamp);
+		FREE(_lat);
+		FREE(_lon);
 
 		if (tag_list) {
 			tag *cur;
@@ -384,14 +222,9 @@ void endElement(void *userData, const char *ename)
 			cur = tag_list;
 
 			while (cur) {
-				if (cur->key) {
-					free(cur->key);
-					cur->key = NULL;
-				}
-				if (cur->value) {
-					free(cur->value);
-					cur->value = NULL;
-				}
+				FREE(cur->key);
+				FREE(cur->value);
+
 				old = cur;
 				cur = cur->next;
 				free(old);
@@ -425,7 +258,8 @@ int main(int argc, char *argv[], char *envp[])
 	fprintf(stdout, "SET NAMES 'utf8' COLLATE 'utf8_unicode_ci';\n");
 	fprintf(stdout, "SET CHARACTER SET 'utf8';\n");
 	fprintf(stdout, "SET collation_connection = 'utf8_general_ci';\n");
-	fprintf(stdout, "DELETE FROM poi;\n");
+	fprintf(stdout, "DELETE FROM node;\n");
+	fprintf(stdout, "DELETE FROM tag;\n");
 	fflush(stdout);
 
 	for (i = 1; i < argc; i++) {
