@@ -53,11 +53,12 @@ require_once('../www/config.php');
 @mysql_query("SET collation_connection = 'utf8_general_ci'");
 
 // go through the lowest level to see if there are any candidates to bring up
-$result = mysql_query("SELECT DISTINCT sym FROM poi ORDER BY sym ASC;");
+$result = mysql_query("SELECT DISTINCT v, node_id FROM tag WHERE (k = 'shop' OR k = 'amenity' OR k = 'tourism') ORDER BY v ASC;");
 while ($row = mysql_fetch_row($result)) {
 	if (!file_exists("../www/sym/" . $row[0] . ".png")) {
 		print "../www/sym/" . $row[0] . ".png" . "\n";
-		mysql_query("DELETE FROM poi WHERE sym = '" . mysql_real_escape_string($row[0]) . "';");
+		mysql_query("DELETE FROM node WHERE id = '" . mysql_real_escape_string($row[1]) . "';");
+		mysql_query("DELETE FROM tag WHERE node_id = '" . mysql_real_escape_string($row[1]) . "';");
 	}
 }
 mysql_free_result($result);
