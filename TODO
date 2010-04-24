@@ -4,6 +4,7 @@
 - Frontend
  * geoip/geolocation to determine where the map should be centered on the user's first visit
  * Add link to GPX for the current map
+ * Don't fetch another GPX file if a fetch is in progress.
 
 - Backend
  * Parallelize posm_extractor
