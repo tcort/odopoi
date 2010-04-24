@@ -5,4 +5,4 @@ cmake_install.cmake
 posm_extractor
 map.osm.bz2
 map.osm
-poi.sql
+*.sql
