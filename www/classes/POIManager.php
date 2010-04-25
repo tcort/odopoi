@@ -68,6 +68,10 @@ class POIManager {
 
 	public function getName($node_id) {
 		$name = $this->getValue($node_id, "name");
+		if (!strcmp($website,"Unknown") && !strcmp($this->getValue("highway"),"busstop")) {
+			$name = "Bus Stop";
+		}
+
 		$website = $this->getWebsite($node_id);
 		if (!strcmp($website,"http://Unknown")) {
 			return $name;
@@ -77,7 +81,7 @@ class POIManager {
 	}
 
 	public function getDesc($node_id) {
-		$filter_keys = array("don't put anything here","amenity","tourism","shop","name","website","created_by");
+		$filter_keys = array("don't put anything here","amenity","tourism","shop","name","website","created_by","highway");
 
 		$desc = "<table class=\"poi\">";
 
@@ -107,6 +111,11 @@ class POIManager {
 		$sym = $this->getValue($node_id, "shop");
 		if (strcmp($sym, "Unknown")) {
 			return $sym;
+		}
+
+		$sym = $this->getValue($node_id, "highway");
+		if (!strcmp($sym, "busstop")) {
+			return "bus";
 		}
 
 		return $sym;
