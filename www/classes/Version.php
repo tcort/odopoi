@@ -41,7 +41,7 @@ mb_internal_encoding('UTF-8');
 class Version {
 
 	var $program = "OpenDataMap.ca";
-	var $version = "2.0_beta3";
+	var $version = "2.0_beta4";
 
 }
 
