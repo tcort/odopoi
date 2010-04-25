@@ -36,6 +36,7 @@
 
 #define _BSD_SOURCE
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -276,44 +277,63 @@ int main(int argc, char *argv[], char *envp[])
 
 	for (i = 1; i < argc; i++) {
 
-		parser = XML_ParserCreate("UTF-8");
-		if (parser == NULL) {
-			fprintf(stderr, "Could not initialize parser.\n");
-		}
+		pid_t pid = fork();
 
-		XML_SetUserData(parser, &depth);
-		XML_SetElementHandler(parser, startElement, endElement);
+		if (pid == 0) {
 
-		if (strlen(argv[i]) == 1 && argv[i][0] == '-') {
-			f = stdin;
-		} else {
-			f = fopen(argv[i], "rb");
-			if (f == NULL) {
-				fprintf(stderr, "Could not open '%s'\n", argv[i]);
-				XML_ParserFree(parser);
-				return 1;
+			parser = XML_ParserCreate("UTF-8");
+			if (parser == NULL) {
+				fprintf(stderr, "Could not initialize parser.\n");
 			}
-		}
 
-		do {
-			len = fread(buf, sizeof(char), BUFSIZE, f);
-			done = feof(f);
+			XML_SetUserData(parser, &depth);
+			XML_SetElementHandler(parser, startElement, endElement);
 
-			if (!XML_Parse(parser, buf, len, done)) {
+			if (strlen(argv[i]) == 1 && argv[i][0] == '-') {
+				f = stdin;
+			} else {
+				f = fopen(argv[i], "rb");
+				if (f == NULL) {
+					fprintf(stderr, "Could not open '%s'\n", argv[i]);
+					XML_ParserFree(parser);
+					return 1;
+				}
+			}
+
+			do {
+				len = fread(buf, sizeof(char), BUFSIZE, f);
+				done = feof(f);
+
+				if (!XML_Parse(parser, buf, len, done)) {
+					fclose(f);
+					fprintf(stderr, "Error (%d): %s at line %d\n", XML_GetErrorCode(parser), XML_ErrorString(XML_GetErrorCode(parser)), (int) XML_GetCurrentLineNumber(parser));
+					XML_ParserFree(parser);
+					return 1;
+				}
+
+			} while (!done);
+
+			if (f != stdin) {
 				fclose(f);
-				fprintf(stderr, "Error (%d): %s at line %d\n", XML_GetErrorCode(parser), XML_ErrorString(XML_GetErrorCode(parser)), (int) XML_GetCurrentLineNumber(parser));
-				XML_ParserFree(parser);
-				return 1;
 			}
 
-		} while (!done);
+			XML_ParserFree(parser);
 
-		if (f != stdin) {
-			fclose(f);
+			return 0;
+		} else if (pid == -1) {
+			perror("fork");
+			return -1;
 		}
-
-		XML_ParserFree(parser);
 	}
+
+	while (1) {
+		int status = 0;
+		pid_t pid = wait(&status);
+		if (pid == -1 && errno == ECHILD) {
+			break;
+		}
+	}
+
 
 	return 0;
 }
