@@ -68,7 +68,7 @@ class POIManager {
 
 	public function getName($node_id) {
 		$name = $this->getValue($node_id, "name");
-		if (!strcmp($website,"Unknown") && !strcmp($this->getValue("highway"),"busstop")) {
+		if (!strcmp($website,"Unknown") && !strcmp($this->getValue("highway"),"bus_stop")) {
 			$name = "Bus Stop";
 		}
 
@@ -85,9 +85,9 @@ class POIManager {
 
 		$desc = "<table class=\"poi\">";
 
-		$sql = "SELECT k,v FROM tag WHERE node_id = '" . $this->db->escape($node_id) . "';";
+		$sql = "SELECT k,v FROM tag WHERE node_id = '" . $this->db->escape($node_id) . "' ORDER BY k ASC;";
 		$result = $this->db->query($sql);
-		if ($result->hasNext()) {
+		while ($result->hasNext()) {
 			$row = $result->next();
 			if (array_search(trim($row[0]), $filter_keys) == FALSE) {
 				$desc .= "<tr><td class=\"k\">" . $row[0] . "</td><td class=\"v\">" . $row[1] . "</td></tr>";
@@ -114,7 +114,7 @@ class POIManager {
 		}
 
 		$sym = $this->getValue($node_id, "highway");
-		if (!strcmp($sym, "busstop")) {
+		if (!strcmp($sym, "bus_stop")) {
 			return "bus";
 		}
 

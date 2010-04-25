@@ -177,7 +177,7 @@ int isPOI() {
 			found_amenity = 1;
 		} else if (!strcmp(cur->key, "tourism")) {
 			found_amenity = 1;
-		} else if (!strcmp(cur->key, "highway") && !strcmp(cur->value, "busstop")) {
+		} else if (!strcmp(cur->key, "highway") && !strcmp(cur->value, "bus_stop")) {
 			found_busstop = 1;
 		}
 
