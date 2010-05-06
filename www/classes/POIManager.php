@@ -68,7 +68,7 @@ class POIManager {
 
 	public function getName($node_id) {
 		$name = $this->getValue($node_id, "name");
-		if (!strcmp($website,"Unknown") && !strcmp($this->getValue("highway"),"bus_stop")) {
+		if (!strcmp($name,"Unknown") && !strcmp($this->getValue("highway"),"bus_stop")) {
 			$name = "Bus Stop";
 		}
 
