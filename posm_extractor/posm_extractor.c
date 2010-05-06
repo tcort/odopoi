@@ -44,6 +44,8 @@
 #include <unistd.h>
 #include <expat.h>
 
+#undef DO_FORK
+
 #define FREE(x)				\
 	do {				\
 		if (x != NULL) {	\
@@ -277,9 +279,11 @@ int main(int argc, char *argv[], char *envp[])
 
 	for (i = 1; i < argc; i++) {
 
+#ifdef DO_FORK
 		pid_t pid = fork();
 
 		if (pid == 0) {
+#endif
 
 			parser = XML_ParserCreate("UTF-8");
 			if (parser == NULL) {
@@ -319,13 +323,16 @@ int main(int argc, char *argv[], char *envp[])
 
 			XML_ParserFree(parser);
 
+#ifdef DO_FORK
 			return 0;
 		} else if (pid == -1) {
 			perror("fork");
 			return -1;
 		}
+#endif
 	}
 
+#ifdef DO_FORK
 	while (1) {
 		int status = 0;
 		pid_t pid = wait(&status);
@@ -333,7 +340,7 @@ int main(int argc, char *argv[], char *envp[])
 			break;
 		}
 	}
-
+#endif
 
 	return 0;
 }
