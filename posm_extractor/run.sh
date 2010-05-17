@@ -36,4 +36,9 @@
 
 set -e
 
+if [ ! -f ./posm_extractor ]
+then
+	./build-native.sh > /dev/null
+fi
+
 ls -1 data/*osm | xargs ./posm_extractor
