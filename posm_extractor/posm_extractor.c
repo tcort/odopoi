@@ -54,13 +54,6 @@
 	} while (0)
 
 #define BUFSIZE (4194304)
-#define LAT_MIN ( 41.50)
-#define LAT_MAX ( 83.25)
-#define LON_MIN (-141.25)
-#define LON_MAX (-47.50)
-
-/* for ottawa/gatineau: lat 45 to 47 | lon -77 to -74 */
-/* for all of Canada: lat 41.50 to 83.25 | lon -141.25 to -47.50 */
 
 typedef struct tag {
 	char *key;
