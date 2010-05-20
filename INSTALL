@@ -1,0 +1,87 @@
+odopoi Installation Guide
+=========================
+
+WARNING: this is *BETA* software under active development. Some of the 
+"gum and ducttape" is still around from the initial prototype.
+
+System Requirements
+-------------------
+
+You'll need an apache 2.x web server configured with PHP 5.x and MySQL 
+5.x. The program that extracts the points of interest from the OSM 
+files, named posm_extractor, needs to be compiled. You'll need a C 
+compiler (gcc), expat library, and cmake. A future version will require 
+pthreads.
+
+Getting the Source Code
+-----------------------
+
+$ git clone git://github.com/tcort/odopoi.gi
+
+Configure Apache
+----------------
+
+Set the document root to be /path/to/odopoi/www
+
+Permissions
+-----------
+
+Make /path/to/odopoi/www/cache readable and writable by the web server user.
+
+Database Configuration
+----------------------
+
+Create a MySQL database and a MySQL user with permissions to access it.
+
+Edit the /path/to/odopoi/www/config.php file.
+
+Download some OSM data
+----------------------
+
+Get one or more OSM files. There are a few sources:
+
+ * http://planet.openstreetmap.org/
+ * http://downloads.cloudmade.com/
+ * http://www.openstreetmap.org/ (Export as "OpenStreetMap XML Data")
+
+They can be put anywhere, but /path/to/odopoi/posm_extractor/data is the best.
+
+Compile posm_extractor
+----------------------
+
+$ cd /path/to/odopoi/posm_extractor
+$ ./build-native.sh
+
+Extract POI from your OSM files in /path/to/odopoi/posm_extractor/data
+----------------------------------------------------------------------
+
+$ cd /path/to/odopoi/posm_extractor
+$ ./run.sh > extract.sql
+
+Load the extract into MySQL
+---------------------------
+
+$ mysql -u your_username_here -p your_database_name_here < extract.sql
+
+Run some data Cleanups
+----------------------
+
+These are processes left over from the early days of development, but 
+are pretty easy to run. symbol-check.php removes any points of interest 
+that don't have icons or are malformed. zoom-calc.php computes at what 
+zoom level points are displayed on the map so that the icons don't 
+overlap with other icons.
+
+$ cd /path/to/odopoi/utl
+$ php symbol-check.php
+$ php zoom-calc.php
+
+symbol-check.php should take about 30 seconds to run.
+zoom-calc.php may take 20 to 30 minutes on Canada-sized data sets.
+
+The End
+-------
+
+That should be it. Feel free to e-mail me questions and/or improvements.
+
+				-- Thomas Cort <linuxgeek@gmail.com>

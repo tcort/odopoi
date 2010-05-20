@@ -10,8 +10,13 @@
 Overview
 --------
 This web application is written in PHP/MySQL and displays
-points of interest, extracted from OpenStreetMap's planet.osm,
-on an OpenStreetMap using OpenLayers.
+points of interest, extracted from OpenStreetMap's planet.osm
+or any other OSM file, on an OpenStreetMap using OpenLayers.
+
+Installation Instructions
+-------------------------
+
+See the INSTALL file for details.
 
 Live Demo
 ---------
