@@ -10,8 +10,12 @@ System Requirements
 You'll need an apache 2.x web server configured with PHP 5.x and MySQL 
 5.x. The program that extracts the points of interest from the OSM 
 files, named posm_extractor, needs to be compiled. You'll need a C 
-compiler (gcc), expat library, and cmake. A future version will require 
-pthreads.
+compiler (gcc), expat library, make, and cmake. A future version will
+require pthreads.
+
+Note: it is easiest to compile and run posm_extractor on GNU/Linux.
+Attempts to get it to compile and run under cygwin and Dev-C++ on
+Microsoft Windoes have not been successful.
 
 Getting the Source Code
 -----------------------
