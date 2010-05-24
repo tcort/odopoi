@@ -39,6 +39,11 @@ Create a MySQL database and a MySQL user with permissions to access it.
 
 Edit the /path/to/odopoi/www/config.php file.
 
+Load Database Schema
+--------------------
+
+$ mysql -u your_username_here -p your_database_name_here < /path/to/odopoi/database.sql
+
 Download some OSM data
 ----------------------
 
