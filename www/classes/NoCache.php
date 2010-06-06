@@ -35,10 +35,22 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-$hostname = "localhost";
-$database = "odopoi";
-$username = "root";
-$password = "abc123";
+mb_language('uni');
+mb_internal_encoding('UTF-8');
 
-$cache_type = "FileCache"; /* valid values are NoCache or FileCache */
+require_once('Cache.php');
+
+class NoCache extends Cache {
+
+	public function get($key) {
+		/* nothing in our cache for $key */
+		return FALSE;
+	}
+
+	public function put($key, $value) {
+		/* do nothing */
+		return TRUE;
+	}
+}
+
 ?>

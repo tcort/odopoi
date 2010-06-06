@@ -40,6 +40,7 @@ mb_language('uni');
 mb_internal_encoding('UTF-8');
 
 require_once('config.php');
+require_once('classes/NoCache.php');
 require_once('classes/FileCache.php');
 require_once('classes/MySQLDatabase.php');
 require_once('classes/POIManager.php');
@@ -61,7 +62,13 @@ if (strcmp($_REQUEST["action"], "getPOI") == 0) {
 		$max_lon = ($tllon > $brlon) ? $tllon : $brlon;
 
 		$key = "poi_" . $min_lat . "_" . $max_lat . "_" . $min_lon . "_" . $max_lon . "_" . $zoom;
-		$cache = new FileCache();
+
+		if (strcmp($cache_type,"FileCache") == 0) { 
+			$cache = new FileCache();
+		} else {
+			$cache = new NoCache();
+		}
+
 		$xml = $cache->get($key);
 		if ($xml == FALSE) {
 			$db = new MySQLDatabase($hostname, $database, $username, $password);
