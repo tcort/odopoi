@@ -42,8 +42,8 @@ mb_internal_encoding('UTF-8');
 require_once('../www/config.php');
 
 // Connect to the Database
-@mysql_connect($hostname, $username, $password) or die("Unable to connect to database");
-@mysql_select_db($database) or die("Unable to select database");
+mysql_connect($hostname, $username, $password) or die("Unable to connect to database");
+mysql_select_db($database) or die("Unable to select database");
 
 // UTF-8 enable the database connection
 @mysql_set_charset('utf8');
