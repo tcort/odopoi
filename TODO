@@ -6,6 +6,7 @@
  * Add link to GPX for the current map
  * Don't fetch another GPX file if a fetch is in progress.
  * Display type of point in info bubble
+ * Permalinks
 
 - posm_extractor
  * write a "point in polygon" function
