@@ -5,8 +5,10 @@
  * geoip/geolocation to determine where the map should be centered on the user's first visit
  * Add link to GPX for the current map
  * Don't fetch another GPX file if a fetch is in progress.
+ * Display type of point in info bubble
 
 - posm_extractor
  * write a "point in polygon" function
  * create a polygon for canada
  * add support for applying changesets
+ * parallelize
