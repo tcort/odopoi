@@ -20,7 +20,7 @@ Microsoft Windoes have not been successful.
 Getting the Source Code
 -----------------------
 
-$ git clone git://github.com/tcort/odopoi.gi
+$ git clone git://github.com/tcort/odopoi.git
 
 Configure Apache
 ----------------
@@ -52,6 +52,7 @@ Get one or more OSM files. There are a few sources:
  * http://planet.openstreetmap.org/
  * http://downloads.cloudmade.com/
  * http://www.openstreetmap.org/ (Export as "OpenStreetMap XML Data")
+ * http://download.geofabrik.de/osm/
 
 They can be put anywhere, but /path/to/odopoi/posm_extractor/data is the best.
 
