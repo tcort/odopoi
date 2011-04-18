@@ -52,7 +52,6 @@ mysql_select_db($database) or die("Unable to select database");
 @mysql_query("SET CHARACTER SET 'utf8'");
 @mysql_query("SET collation_connection = 'utf8_general_ci'");
 
-// go through the lowest level to see if there are any candidates to bring up
 $result = mysql_query("SELECT DISTINCT v, node_id FROM tag WHERE (k = 'shop' OR k = 'amenity' OR k = 'tourism') ORDER BY v ASC;");
 while ($row = mysql_fetch_row($result)) {
 	if (!file_exists("../www/sym/" . $row[0] . ".png")) {
