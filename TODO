@@ -15,3 +15,6 @@
  * create a polygon for canada
  * add support for applying changesets
  * parallelize
+
+- General
+ * add "office" and "craft" keys
