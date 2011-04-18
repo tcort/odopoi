@@ -7,6 +7,8 @@
  * Don't fetch another GPX file if a fetch is in progress.
  * Display type of point in info bubble
  * Permalinks
+ * Upgrade OpenLayers to 2.10
+  + Allow the map to be dragged even when an icon has been clicked.
 
 - posm_extractor
  * write a "point in polygon" function
